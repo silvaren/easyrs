@@ -1,5 +1,6 @@
 package silvaren.com.rswrap;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -26,21 +27,59 @@ public class MainActivity extends AppCompatActivity {
         options.inDither = false;
         options.inPurgeable = true;
         Bitmap sampleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
-//        Bitmap sampleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample);
 
-        RenderScript rs = RenderScript.create(this);
-        Allocation ain = Allocation.createFromBitmap(rs, sampleBitmap);
-        Element bitmapElement = ain.getElement();
-        Allocation aout = Allocation.createTyped(rs, ain.getType());
+        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
 
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, bitmapElement);
-        blurScript.setInput(ain);
-        blurScript.setRadius(25.f);
-        blurScript.forEach(aout);
-
-        aout.copyTo(sampleBitmap);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(sampleBitmap);
+        imageView.setImageBitmap(blurredBitmap);
+    }
+
+    static class BitmapRSContext {
+        public final RenderScript rs;
+        public final Allocation ain;
+        public final Element bitmapElement;
+        public final Allocation aout;
+
+        private BitmapRSContext(RenderScript rs, Allocation ain, Element bitmapElement, Allocation aout) {
+            this.rs = rs;
+            this.ain = ain;
+            this.bitmapElement = bitmapElement;
+            this.aout = aout;
+        }
+
+        public static BitmapRSContext createFromBitmap(Bitmap bitmap, Context context) {
+            RenderScript rs = RenderScript.create(context);
+            Allocation ain = Allocation.createFromBitmap(rs, bitmap);
+            Element bitmapElement = ain.getElement();
+            Allocation aout = Allocation.createTyped(rs, ain.getType());
+
+            return new BitmapRSContext(rs, ain, bitmapElement, aout);
+        }
+    }
+
+    private void blurInPlace(Bitmap bitmap, float radius, Context context) {
+        blur(bitmap, bitmap, radius, context);
+    }
+
+    private Bitmap blur(Bitmap inputBitmap, float radius, Context context) {
+        Bitmap.Config config = inputBitmap.getConfig();
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
+                config);
+        blur(inputBitmap, outputBitmap, radius, context);
+        return outputBitmap;
+    }
+
+    private void blur(Bitmap inputBitmap, Bitmap outputBitmap, float radius, Context context) {
+        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+
+        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
+                bitmapRSContext.rs,
+                bitmapRSContext.bitmapElement);
+        blurScript.setInput(bitmapRSContext.ain);
+        blurScript.setRadius(radius);
+        blurScript.forEach(bitmapRSContext.aout);
+
+        bitmapRSContext.aout.copyTo(outputBitmap);
     }
 }
