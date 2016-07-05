@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlend;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
@@ -34,23 +33,11 @@ public class MainActivity extends AppCompatActivity {
 
 //        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
-        blend(this, sampleBitmap, sampleEdgeBitmap);
+        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
 
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(sampleEdgeBitmap);
-    }
-
-    private void blend(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(srcBitmap, context);
-        Allocation aout = Allocation.createFromBitmap(bitmapRSContext.rs, dstBitmap);
-
-        ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-
-        blendScript.forEachAdd(bitmapRSContext.ain, aout);
-
-        aout.copyTo(dstBitmap);
     }
 
     private Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
