@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
-        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
+//        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
 
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
@@ -76,29 +75,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void blurInPlace(Context context, Bitmap bitmap, float radius) {
-        blur(context, bitmap, bitmap, radius);
-    }
-
-    private Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                config);
-        blur(context, inputBitmap, outputBitmap, radius);
-        return outputBitmap;
-    }
-
-    private void blur(Context context, Bitmap inputBitmap, Bitmap outputBitmap, float radius) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
-
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
-                bitmapRSContext.rs,
-                bitmapRSContext.bitmapElement);
-        blurScript.setInput(bitmapRSContext.ain);
-        blurScript.setRadius(radius);
-        blurScript.forEach(aout);
-
-        aout.copyTo(outputBitmap);
-    }
 }
