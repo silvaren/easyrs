@@ -19,7 +19,7 @@ class Blur {
     }
 
     public static void blur(Context context, Bitmap inputBitmap, Bitmap outputBitmap, float radius) {
-        MainActivity.BitmapRSContext bitmapRSContext = MainActivity.BitmapRSContext.createFromBitmap(inputBitmap, context);
+        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
         ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(

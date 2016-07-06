@@ -8,18 +8,18 @@ import android.support.v8.renderscript.ScriptIntrinsicBlend;
 class Blend {
 
     private static class BaseSetup {
-        public final MainActivity.BitmapRSContext bitmapRSContext;
+        public final BitmapRSContext bitmapRSContext;
         public final Allocation aout;
         public final ScriptIntrinsicBlend blendScript;
 
-        private BaseSetup(MainActivity.BitmapRSContext bitmapRSContext, Allocation aout, ScriptIntrinsicBlend scriptIntrinsicBlend) {
+        private BaseSetup(BitmapRSContext bitmapRSContext, Allocation aout, ScriptIntrinsicBlend scriptIntrinsicBlend) {
             this.bitmapRSContext = bitmapRSContext;
             this.aout = aout;
             this.blendScript = scriptIntrinsicBlend;
         }
 
         public static BaseSetup create(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
-            MainActivity.BitmapRSContext bitmapRSContext = MainActivity.BitmapRSContext.createFromBitmap(srcBitmap, context);
+            BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(srcBitmap, context);
             Allocation aout = Allocation.createFromBitmap(bitmapRSContext.rs, dstBitmap);
 
             ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(

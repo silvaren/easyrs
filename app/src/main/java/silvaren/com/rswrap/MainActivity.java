@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
@@ -53,26 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         aout.copyTo(outputBitmap);
         return outputBitmap;
-    }
-
-    static class BitmapRSContext {
-        public final RenderScript rs;
-        public final Allocation ain;
-        public final Element bitmapElement;
-
-        private BitmapRSContext(RenderScript rs, Allocation ain, Element bitmapElement) {
-            this.rs = rs;
-            this.ain = ain;
-            this.bitmapElement = bitmapElement;
-        }
-
-        public static BitmapRSContext createFromBitmap(Bitmap bitmap, Context context) {
-            RenderScript rs = RenderScript.create(context);
-            Allocation ain = Allocation.createFromBitmap(rs, bitmap);
-            Element bitmapElement = ain.getElement();
-
-            return new BitmapRSContext(rs, ain, bitmapElement);
-        }
     }
 
 }
