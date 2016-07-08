@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
-//        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
+        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
 
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
