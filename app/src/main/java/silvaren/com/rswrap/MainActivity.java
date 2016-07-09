@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.ScriptIntrinsicHistogram;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
@@ -31,11 +33,27 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
 //        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
-
-        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, sampleBitmap, Convolve.Kernels5x5.SOBEL_X);
+//        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, sampleBitmap, Convolve.Kernels5x5.SOBEL_X);
+        histogram(this, sampleBitmap);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(convolved5x5Bitmap);
+        imageView.setImageBitmap(sampleBitmap);
+    }
+
+    private int[] histogram(Context context, Bitmap inputBitmap) {
+        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32_4(bitmapRSContext.rs),
+                256);
+
+        ScriptIntrinsicHistogram histogramScript = ScriptIntrinsicHistogram.create(
+                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
+        histogramScript.setOutput(aout);
+        histogramScript.forEach(bitmapRSContext.ain);
+
+        int[] histograms = new int[4*256];
+        aout.copyTo(histograms);
+
+        return histograms;
     }
 
     private Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
