@@ -3,10 +3,18 @@ package silvaren.com.rswrap;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Script;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 
 class Convolve {
+
+    static class Kernels5x5 {
+        public static float[] SOBEL_X = {
+                1.f, 2.f, 0.f, -2.f, -1.f,
+                4.f, 8.f, 0.f, -8.f, -4.f,
+                6.f, 12.f, 1.f, -12.f, -6.f,
+                4.f, 8.f, 0.f, -8.f, -4.f,
+                1.f, 2.f, 0.f, -2.f, -1.f};
+    }
 
     public static void convolve5x5InPlace(Context context, Bitmap bitmap, float[] coefficients) {
         doConvolve5x5(context, bitmap, bitmap, coefficients);
