@@ -6,19 +6,20 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 class Blur {
+
     public static void blurInPlace(Context context, Bitmap bitmap, float radius) {
-        blur(context, bitmap, bitmap, radius);
+        doBlur(context, bitmap, bitmap, radius);
     }
 
-    private Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
+    public static Bitmap doBlur(Context context, Bitmap inputBitmap, float radius) {
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
                 config);
-        blur(context, inputBitmap, outputBitmap, radius);
+        doBlur(context, inputBitmap, outputBitmap, radius);
         return outputBitmap;
     }
 
-    public static void blur(Context context, Bitmap inputBitmap, Bitmap outputBitmap, float radius) {
+    private static void doBlur(Context context, Bitmap inputBitmap, Bitmap outputBitmap, float radius) {
         BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
