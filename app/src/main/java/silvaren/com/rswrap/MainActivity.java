@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.ScriptIntrinsicHistogram;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
@@ -46,9 +44,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Bitmap drawColorBitmap(Bitmap sampleBitmap, int color) {
-        Bitmap outputBitmap = Bitmap.createBitmap(256 * 4, 256, Bitmap.Config.ARGB_8888);
-        for (int x = 0; x < 256 * 4; x++) {
-            for (int y = 0; y < 256; y++) {
+        Bitmap outputBitmap = Bitmap.createBitmap(Constants.COLOR_DEPTH, Constants.COLOR_DEPTH,
+                Bitmap.Config.ARGB_8888);
+        for (int x = 0; x < Constants.COLOR_DEPTH; x++) {
+            for (int y = 0; y < Constants.COLOR_DEPTH; y++) {
                 outputBitmap.setPixel(x, y, color);
             }
         }
@@ -57,23 +56,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Bitmap drawHistograms(int[] histograms, int channels) {
-        Bitmap outputBitmap = Bitmap.createBitmap(256 * channels, 256, Bitmap.Config.ARGB_8888);
+        Bitmap outputBitmap = Bitmap.createBitmap(Constants.COLOR_DEPTH * channels,
+                Constants.COLOR_DEPTH, Bitmap.Config.ARGB_8888);
 
         float[] maxes = new float[channels];
         for (int c = 0; c < channels; c++) {
             int max = 0;
-            for (int i = 0; i < 256; i++) {
+            for (int i = 0; i < Constants.COLOR_DEPTH; i++) {
                 max = Math.max(histograms[c + i * channels], max);
             }
             maxes[c] = max;
         }
 
 
-        for (int x = 0; x < 256 * channels; x++) {
-            for (int y = 0; y < 256; y++) {
-                int c = x / 256;
-                int i = x % 256;
-                int height = 255 - (int) (histograms[c + i * channels] * 255.f / maxes[c]);
+        for (int x = 0; x < Constants.COLOR_DEPTH * channels; x++) {
+            for (int y = 0; y < Constants.COLOR_DEPTH; y++) {
+                int c = x / Constants.COLOR_DEPTH;
+                int i = x % Constants.COLOR_DEPTH;
+                int height = Constants.COLOR_DEPTH - 1 - (int) (histograms[c + i * channels] *
+                        (Constants.COLOR_DEPTH - 1.f) / maxes[c]);
                 int color = y > height? 0xFF000000 : 0xFFFFFFFF;
                 outputBitmap.setPixel(x, y, color);
             }
