@@ -34,9 +34,11 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
 //        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
 //        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, sampleBitmap, Convolve.Kernels5x5.SOBEL_X);
-        Bitmap colorBitmap = drawColorBitmap(sampleBitmap, 0xFFFF0000);
-        int[] histograms = histogram(this, colorBitmap);
-        Bitmap histogramBitmap = drawHistograms(histograms);
+//        Bitmap colorBitmap = drawColorBitmap(sampleBitmap, 0xFFFF0000);
+//        int[] histograms = Histogram.rgbaHistograms(this, colorBitmap);
+        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
+//        Bitmap histogramsBitmap = drawHistograms(histograms, 4);
+        Bitmap histogramBitmap = drawHistograms(histogram, 1);
 
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
@@ -54,47 +56,30 @@ public class MainActivity extends AppCompatActivity {
         return outputBitmap;
     }
 
-    private Bitmap drawHistograms(int[] histograms) {
-        Bitmap outputBitmap = Bitmap.createBitmap(256 * 4, 256, Bitmap.Config.ARGB_8888);
+    private Bitmap drawHistograms(int[] histograms, int channels) {
+        Bitmap outputBitmap = Bitmap.createBitmap(256 * channels, 256, Bitmap.Config.ARGB_8888);
 
-        float[] maxes = new float[4];
-        for (int c = 0; c < 4; c++) {
+        float[] maxes = new float[channels];
+        for (int c = 0; c < channels; c++) {
             int max = 0;
             for (int i = 0; i < 256; i++) {
-                max = Math.max(histograms[c + i * 4], max);
+                max = Math.max(histograms[c + i * channels], max);
             }
             maxes[c] = max;
         }
 
 
-        for (int x = 0; x < 256 * 4; x++) {
+        for (int x = 0; x < 256 * channels; x++) {
             for (int y = 0; y < 256; y++) {
                 int c = x / 256;
                 int i = x % 256;
-                int height = 255 - (int) (histograms[c + i * 4] * 255.f / maxes[c]);
+                int height = 255 - (int) (histograms[c + i * channels] * 255.f / maxes[c]);
                 int color = y > height? 0xFF000000 : 0xFFFFFFFF;
                 outputBitmap.setPixel(x, y, color);
             }
         }
 
         return outputBitmap;
-    }
-
-    private int[] histogram(Context context, Bitmap inputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
-        Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32_4(bitmapRSContext.rs),
-                256);
-
-        ScriptIntrinsicHistogram histogramScript = ScriptIntrinsicHistogram.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-        histogramScript.setOutput(aout);
-        histogramScript.forEach(bitmapRSContext.ain);
-
-        int[] histograms = new int[4*256];
-        aout.copyTo(histograms);
-
-        // RGBA interleaved: [R0,G0,B0,A0,R1,G1,B1,A1...
-        return histograms;
     }
 
     private Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
