@@ -44,20 +44,22 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(sampleBitmap);
     }
 
-    private Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(width, height, config);
-        Type outType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(), width,
-                height);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
+    static class Resize {
+        public static Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
+            BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+            Bitmap.Config config = inputBitmap.getConfig();
+            Bitmap outputBitmap = Bitmap.createBitmap(width, height, config);
+            Type outType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(), width,
+                    height);
+            Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
 
-        ScriptIntrinsicResize resizeScript = ScriptIntrinsicResize.create(bitmapRSContext.rs);
-        resizeScript.setInput(bitmapRSContext.ain);
-        resizeScript.forEach_bicubic(aout);
+            ScriptIntrinsicResize resizeScript = ScriptIntrinsicResize.create(bitmapRSContext.rs);
+            resizeScript.setInput(bitmapRSContext.ain);
+            resizeScript.forEach_bicubic(aout);
 
-        aout.copyTo(outputBitmap);
-        return outputBitmap;
+            aout.copyTo(outputBitmap);
+            return outputBitmap;
+        }
     }
 
 }
