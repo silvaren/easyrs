@@ -17,6 +17,13 @@ class Convolve {
                 1.f, 2.f, 0.f, -2.f, -1.f};
     }
 
+    static class Kernels3x3 {
+        public static float[] SOBEL_X = {
+                1.f, 0.f, -1.f,
+                2.f, 1.f, -2.f,
+                1.f, 0.f, -1.f};
+    }
+
     public static void convolve5x5InPlace(Context context, Bitmap bitmap, float[] coefficients) {
         doConvolve5x5(context, bitmap, bitmap, coefficients);
     }
