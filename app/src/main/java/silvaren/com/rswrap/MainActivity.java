@@ -6,9 +6,16 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
+import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,10 +45,46 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap histogramsBitmap = drawHistograms(histograms, 4);
 //        Bitmap histogramBitmap = drawHistograms(histogram, 1);
 
+        int width = 256 * 2;
+        int height = 256 * 2;
+        int size = width * height;
+        byte[] nv21ByteArray = new byte[size + size / 2];
+        Arrays.fill(nv21ByteArray, (byte) 127);
 
+        for (int x = 0; x < 256; x++) {
+            for (int y = 0; y < 256; y++) {
+                nv21ByteArray[size + y * 256 * 2 + x * 2] = (byte) x;
+                nv21ByteArray[size + y * 256 * 2 + x * 2 + 1] = (byte) y;
+            }
+        }
+
+        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(sampleBitmap, this);
+        Element element = Element.U8_4(bitmapRSContext.rs);
+        ScriptIntrinsicYuvToRGB yuvToRgbScript = ScriptIntrinsicYuvToRGB.create(bitmapRSContext.rs, element);
+        Type.Builder tb = new Type.Builder(bitmapRSContext.rs, Element.createPixel(bitmapRSContext.rs,
+                Element.DataType.UNSIGNED_8, Element.DataKind.PIXEL_YUV));
+        tb.setX(width);
+        tb.setY(height);
+        tb.setYuvFormat(android.graphics.ImageFormat.NV21);
+        Allocation yuvAllocation = Allocation.createTyped(bitmapRSContext.rs, tb.create(), Allocation.USAGE_SCRIPT);
+        Type rgbType = Type.createXY(bitmapRSContext.rs, Element.U8_4(bitmapRSContext.rs), width, height);
+        Allocation rgbAllocation = Allocation.createTyped(bitmapRSContext.rs, rgbType);
+        yuvAllocation.copyFrom(nv21ByteArray);
+        yuvToRgbScript.setInput(yuvAllocation);
+        yuvToRgbScript.forEach(rgbAllocation);
+        byte[] rgbArray = new byte[width * height * 4];
+        rgbAllocation.copyTo(rgbArray);
+        IntBuffer intBuf =
+                ByteBuffer.wrap(rgbArray)
+                        .order(ByteOrder.LITTLE_ENDIAN)
+                        .asIntBuffer();
+        int[] array = new int[intBuf.remaining()];
+        intBuf.get(array);
+
+        Bitmap outputBitmap = Bitmap.createBitmap(array, width, height, Bitmap.Config.ARGB_8888);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(sampleBitmap);
+        imageView.setImageBitmap(outputBitmap);
     }
 
     static class Resize {
