@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
@@ -37,12 +38,21 @@ public class MainActivity extends AppCompatActivity {
 //        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
 //        Bitmap histogramsBitmap = drawHistograms(histograms, 4);
 //        Bitmap histogramBitmap = drawHistograms(histogram, 1);
+//        Nv21Image nv21Image = Nv21Image.generateSample();
+//        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
 
-        Nv21Image nv21Image = Nv21Image.generateSample();
-        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
+        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(sampleBitmap, this);
+        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
+
+        ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
+                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
+        colorMatrixScript.setGreyscale();
+        colorMatrixScript.forEach(bitmapRSContext.ain, aout);
+
+        aout.copyTo(sampleBitmap);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(outputBitmap);
+        imageView.setImageBitmap(sampleBitmap);
     }
 
     static class Resize {
