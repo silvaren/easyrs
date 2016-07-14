@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
@@ -45,33 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(sampleBitmap);
-    }
-
-    static class ColorMatrix {
-
-        public static void convertToGrayscaleInPlace(Context context, Bitmap bitmap) {
-            doConvertToGrayscale(context, bitmap, bitmap);
-        }
-
-        public static Bitmap doConvertToGrayScale(Context context, Bitmap inputBitmap) {
-            Bitmap.Config config = inputBitmap.getConfig();
-            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                    config);
-            doConvertToGrayscale(context, inputBitmap, outputBitmap);
-            return outputBitmap;
-        }
-
-        private static void doConvertToGrayscale(Context context, Bitmap inputBitmap, Bitmap outputBitmap) {
-            BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
-            Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
-
-            ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
-                    bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-            colorMatrixScript.setGreyscale();
-            colorMatrixScript.forEach(bitmapRSContext.ain, aout);
-
-            aout.copyTo(outputBitmap);
-        }
     }
 
     static class Resize {
