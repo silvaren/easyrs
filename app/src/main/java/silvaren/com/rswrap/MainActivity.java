@@ -41,18 +41,37 @@ public class MainActivity extends AppCompatActivity {
 //        Nv21Image nv21Image = Nv21Image.generateSample();
 //        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
 
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(sampleBitmap, this);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
-
-        ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-        colorMatrixScript.setGreyscale();
-        colorMatrixScript.forEach(bitmapRSContext.ain, aout);
-
-        aout.copyTo(sampleBitmap);
+        ColorMatrix.convertToGrayscaleInPlace(this, sampleBitmap);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(sampleBitmap);
+    }
+
+    static class ColorMatrix {
+
+        public static void convertToGrayscaleInPlace(Context context, Bitmap bitmap) {
+            doConvertToGrayscale(context, bitmap, bitmap);
+        }
+
+        public static Bitmap doConvertToGrayScale(Context context, Bitmap inputBitmap) {
+            Bitmap.Config config = inputBitmap.getConfig();
+            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
+                    config);
+            doConvertToGrayscale(context, inputBitmap, outputBitmap);
+            return outputBitmap;
+        }
+
+        private static void doConvertToGrayscale(Context context, Bitmap inputBitmap, Bitmap outputBitmap) {
+            BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+            Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
+
+            ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
+                    bitmapRSContext.rs, bitmapRSContext.ain.getElement());
+            colorMatrixScript.setGreyscale();
+            colorMatrixScript.forEach(bitmapRSContext.ain, aout);
+
+            aout.copyTo(outputBitmap);
+        }
     }
 
     static class Resize {
