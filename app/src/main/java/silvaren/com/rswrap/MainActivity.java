@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap histogramBitmap = drawHistograms(histogram, 1);
 
         Nv21Image nv21Image = Nv21Image.generateSample();
-
         Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
