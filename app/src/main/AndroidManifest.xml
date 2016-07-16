@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="silvaren.com.rswrap">
+    package="com.github.silvaren.rstoolbox.tools.rswrap">
 
     <application
         android:allowBackup="true"

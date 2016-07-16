@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "silvaren.com.rswrap"
+        applicationId "com.github.silvaren.rstoolbox.tools.rswrap"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1

@@ -1,4 +1,4 @@
-package silvaren.com.rswrap;
+package com.github.silvaren.rstoolbox.tools.rswrap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
