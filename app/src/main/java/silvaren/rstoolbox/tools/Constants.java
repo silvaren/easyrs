@@ -1,4 +1,4 @@
-package com.github.silvaren.rstoolbox.tools.rswrap;
+package silvaren.rstoolbox.tools;
 
 public class Constants {
 
