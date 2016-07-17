@@ -6,7 +6,7 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 
-class BitmapRSContext {
+public class BitmapRSContext {
     public final RenderScript rs;
     public final Allocation ain;
     public final Element bitmapElement;

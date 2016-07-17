@@ -2,10 +2,21 @@ package silvaren.rstoolbox.client;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
+import android.graphics.ImageFormat;
+import android.graphics.YuvImage;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
 
+import silvaren.rstoolbox.scripts.ScriptC_channel;
+import silvaren.rstoolbox.tools.BitmapRSContext;
+import silvaren.rstoolbox.tools.Blur;
+import silvaren.rstoolbox.tools.ColorMatrix;
 import silvaren.rstoolbox.tools.Lut3D;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +37,24 @@ public class MainActivity extends AppCompatActivity {
         Bitmap sampleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
         Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample_edge, options);
 
+//        Bitmap yuvImage = ColorMatrix.rgbToYuv(this, sampleBitmap);
+//        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(sampleBitmap, this);
+        RenderScript rs = RenderScript.create(this);
+        ScriptC_channel channelScript = new ScriptC_channel(rs);
+        Type inType = Type.createXY(rs, Element.U8_4(rs),
+                1000, 1000);
+        Type outType = Type.createXY(rs, Element.U8(rs),
+                1000, 1000);
+        Allocation ain = Allocation.createTyped(rs, inType);
+        Allocation aout = Allocation.createTyped(rs, outType);
+        Type typedebug = ain.getType();
+        channelScript.forEach_channelR(ain, aout);
+        int size = sampleBitmap.getWidth() * sampleBitmap.getHeight();
+        byte[] yByteArray = new byte[size + size / 2];
+//        aout.copyTo(yByteArray);
+
+        Bitmap outBitmap = BitmapFactory.decodeByteArray(yByteArray, 0, yByteArray.length);
+
 //        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
 //        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
@@ -39,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
 //        ColorMatrix.convertToGrayscaleInPlace(this, sampleBitmap);
 //        Bitmap mappedBitmap = Lut.negativeEffect(this, sampleBitmap);
-        Lut3D.do3dLut(this, sampleBitmap);
+//        Lut3D.do3dLut(this, sampleBitmap);
+
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(sampleBitmap);
+        imageView.setImageBitmap(outBitmap);
     }
 }

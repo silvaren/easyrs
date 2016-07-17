@@ -5,13 +5,13 @@ import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
-class Blur {
+public class Blur {
 
     public static void blurInPlace(Context context, Bitmap bitmap, float radius) {
         doBlur(context, bitmap, bitmap, radius);
     }
 
-    public static Bitmap doBlur(Context context, Bitmap inputBitmap, float radius) {
+    public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
                 config);
