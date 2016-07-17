@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.rstoolbox;
+package silvaren.rstoolbox.tools;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.rstoolbox;
+package silvaren.rstoolbox.tools;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
