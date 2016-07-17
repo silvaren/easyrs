@@ -1,14 +1,12 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.client;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.ScriptIntrinsicResize;
-import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
+
+import silvaren.rstoolbox.tools.Lut3D;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,23 +44,4 @@ public class MainActivity extends AppCompatActivity {
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(sampleBitmap);
     }
-
-    static class Resize {
-        public static Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
-            BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
-            Bitmap.Config config = inputBitmap.getConfig();
-            Bitmap outputBitmap = Bitmap.createBitmap(width, height, config);
-            Type outType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(), width,
-                    height);
-            Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
-
-            ScriptIntrinsicResize resizeScript = ScriptIntrinsicResize.create(bitmapRSContext.rs);
-            resizeScript.setInput(bitmapRSContext.ain);
-            resizeScript.forEach_bicubic(aout);
-
-            aout.copyTo(outputBitmap);
-            return outputBitmap;
-        }
-    }
-
 }

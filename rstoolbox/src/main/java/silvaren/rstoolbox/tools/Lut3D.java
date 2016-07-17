@@ -8,7 +8,7 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsic3DLUT;
 import android.support.v8.renderscript.Type;
 
-class Lut3D {
+public class Lut3D {
     private static Allocation initSampleCube(RenderScript rs) {
         final int sx = 2;
         final int sy = 2;
