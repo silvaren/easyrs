@@ -1,8 +1,18 @@
 package silvaren.rstoolbox.tools;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.ScriptIntrinsicResize;
+import android.support.v8.renderscript.Type;
+
 import java.util.Arrays;
 
-class Nv21Image {
+import silvaren.rstoolbox.scripts.ScriptC_channel;
+import silvaren.rstoolbox.scripts.ScriptC_uvencode;
+
+public class Nv21Image {
 
     public final byte[] nv21ByteArray;
     public final int width;
@@ -29,5 +39,44 @@ class Nv21Image {
         }
 
         return new Nv21Image(nv21ByteArray, width, height);
+    }
+
+    public static byte[] convertToNV21(Context context, Bitmap sampleBitmap) {
+        Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);
+
+        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(yuvImage, context);
+        ScriptC_channel channelScript = new ScriptC_channel(bitmapRSContext.rs);
+        Type outType = Type.createXY(bitmapRSContext.rs, Element.U8(bitmapRSContext.rs),
+                yuvImage.getWidth(), yuvImage.getHeight());
+        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
+        channelScript.forEach_channelR(bitmapRSContext.ain, aout);
+        int size = sampleBitmap.getWidth() * sampleBitmap.getHeight();
+        byte[] yByteArray = new byte[size + size / 2];
+        aout.copyTo(yByteArray);
+
+        Bitmap.Config config = yuvImage.getConfig();
+        Bitmap resizedBmp = Bitmap.createBitmap(yuvImage.getWidth()/2, yuvImage.getHeight()/2, config);
+        Type resizeoutType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(),
+                yuvImage.getWidth()/2, yuvImage.getHeight()/2);
+        Allocation resizeaout = Allocation.createTyped(bitmapRSContext.rs, resizeoutType);
+        ScriptIntrinsicResize resizeScript = ScriptIntrinsicResize.create(bitmapRSContext.rs);
+        resizeScript.setInput(bitmapRSContext.ain);
+        resizeScript.forEach_bicubic(resizeaout);
+        resizeaout.copyTo(resizedBmp);
+
+        Allocation resizedIn = Allocation.createFromBitmap(bitmapRSContext.rs, resizedBmp);
+        ScriptC_uvencode encodeScript = new ScriptC_uvencode(bitmapRSContext.rs);
+        Type uvtype = Type.createX(bitmapRSContext.rs, Element.U8(bitmapRSContext.rs),
+                size / 2);
+        Allocation uvAllocation = Allocation.createTyped(bitmapRSContext.rs, uvtype);
+        encodeScript.set_width(yuvImage.getWidth());
+        encodeScript.set_height(yuvImage.getHeight());
+        encodeScript.set_gOut(uvAllocation);
+        encodeScript.forEach_root(resizedIn);
+        byte[] uvByteArray = new byte[size/2];
+        uvAllocation.copyTo(uvByteArray);
+
+        System.arraycopy(uvByteArray, 0, yByteArray, size, uvByteArray.length);
+        return yByteArray;
     }
 }
