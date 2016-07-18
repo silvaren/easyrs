@@ -46,6 +46,7 @@ public class ColorMatrix {
         ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
                 bitmapRSContext.rs, bitmapRSContext.ain.getElement());
         colorMatrixScript.setRGBtoYUV();
+        colorMatrixScript.setAdd(0.0f, 0.5f, 0.5f, 0.0f);
         colorMatrixScript.forEach(bitmapRSContext.ain, aout);
 
         aout.copyTo(outputBitmap);
