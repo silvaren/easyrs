@@ -6,7 +6,7 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 
-class Resize {
+public class Resize {
 
     public static Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
         BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);

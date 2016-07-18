@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
 
@@ -19,6 +20,7 @@ import java.io.OutputStream;
 import silvaren.rstoolbox.scripts.ScriptC_channel;
 import silvaren.rstoolbox.tools.BitmapRSContext;
 import silvaren.rstoolbox.tools.ColorMatrix;
+import silvaren.rstoolbox.tools.Resize;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,7 +51,17 @@ public class MainActivity extends AppCompatActivity {
         byte[] yByteArray = new byte[size + size / 2];
         aout.copyTo(yByteArray);
 
-//        channelScript.forEach_channelG(bitmapRSContext.ain, gout);
+        Bitmap.Config config = yuvImage.getConfig();
+        Bitmap resizedBmp = Bitmap.createBitmap(yuvImage.getWidth()/2, yuvImage.getHeight()/2, config);
+        Type resizeoutType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(),
+                yuvImage.getWidth()/2, yuvImage.getHeight()/2);
+        Allocation resizeaout = Allocation.createTyped(bitmapRSContext.rs, resizeoutType);
+        ScriptIntrinsicResize resizeScript = ScriptIntrinsicResize.create(bitmapRSContext.rs);
+        resizeScript.setInput(bitmapRSContext.ain);
+        resizeScript.forEach_bicubic(resizeaout);
+        resizeaout.copyTo(resizedBmp);
+
+        
 
         YuvImage yuvImage2 = new YuvImage(yByteArray, ImageFormat.NV21, yuvImage.getWidth(),
                 yuvImage.getHeight(), null);
