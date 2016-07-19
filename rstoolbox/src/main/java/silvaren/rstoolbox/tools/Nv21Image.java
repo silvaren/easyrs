@@ -2,11 +2,17 @@ package silvaren.rstoolbox.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import silvaren.rstoolbox.scripts.ScriptC_channel;
@@ -41,7 +47,8 @@ public class Nv21Image {
         return new Nv21Image(nv21ByteArray, width, height);
     }
 
-    public static byte[] convertToNV21(Context context, Bitmap sampleBitmap) {
+    public static Nv21Image convertToNV21(Context context, Bitmap sampleBitmap) {
+        long startTime = System.currentTimeMillis();
         Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);
 
         BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(yuvImage, context);
@@ -77,6 +84,18 @@ public class Nv21Image {
         uvAllocation.copyTo(uvByteArray);
 
         System.arraycopy(uvByteArray, 0, yByteArray, size, uvByteArray.length);
-        return yByteArray;
+
+        Log.d("NV21", "Conversion to NV21: " + (System.currentTimeMillis() - startTime) + "ms");
+        return new Nv21Image(yByteArray, yuvImage.getWidth(), yuvImage.getHeight());
+    }
+
+    public static Bitmap nv21ToBitmap(Bitmap sampleBitmap, byte[] yByteArray) {
+        YuvImage yuvImage2 = new YuvImage(yByteArray, ImageFormat.NV21, sampleBitmap.getWidth(),
+                sampleBitmap.getHeight(), null);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        yuvImage2.compressToJpeg(new Rect(0, 0, sampleBitmap.getWidth(), sampleBitmap.getHeight()), 100,
+                os);
+        byte[] jpegBytes = os.toByteArray();
+        return BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.length);
     }
 }
