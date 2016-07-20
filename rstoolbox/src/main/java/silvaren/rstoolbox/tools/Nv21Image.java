@@ -51,7 +51,7 @@ public class Nv21Image {
         long startTime = System.currentTimeMillis();
         Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);
 
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(yuvImage, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, yuvImage);
         ScriptC_channel channelScript = new ScriptC_channel(bitmapRSContext.rs);
         Type outType = Type.createXY(bitmapRSContext.rs, Element.U8(bitmapRSContext.rs),
                 yuvImage.getWidth(), yuvImage.getHeight());

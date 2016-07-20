@@ -38,7 +38,7 @@ class Convolve {
 
     private static void doConvolve5x5(Context context, Bitmap inputBitmap, Bitmap outputBitmap,
                                       float[] coefficients) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
         ScriptIntrinsicConvolve5x5 convolve5x5Script = ScriptIntrinsicConvolve5x5.create(
@@ -64,7 +64,7 @@ class Convolve {
 
     private static void doConvolve3x3(Context context, Bitmap inputBitmap, Bitmap outputBitmap,
                                       float[] coefficients) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
         ScriptIntrinsicConvolve3x3 convolve5x5Script = ScriptIntrinsicConvolve3x3.create(

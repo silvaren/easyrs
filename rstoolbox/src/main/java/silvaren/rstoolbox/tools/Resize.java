@@ -9,7 +9,7 @@ import android.support.v8.renderscript.Type;
 public class Resize {
 
     public static Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(width, height, config);
         Type outType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(), width,

@@ -7,7 +7,7 @@ import android.support.v8.renderscript.ScriptIntrinsicLUT;
 
 class Lut {
     public static Bitmap negativeEffect(Context context, Bitmap inputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
                 config);

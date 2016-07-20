@@ -28,7 +28,7 @@ public class ColorMatrix {
     }
 
     private static void doConvertToGrayscale(Context context, Bitmap inputBitmap, Bitmap outputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
         ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
@@ -40,7 +40,7 @@ public class ColorMatrix {
     }
 
     private static void doRgbToYuv(Context context, Bitmap inputBitmap, Bitmap outputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
         ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(

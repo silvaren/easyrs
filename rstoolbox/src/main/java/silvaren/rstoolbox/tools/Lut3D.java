@@ -28,7 +28,7 @@ public class Lut3D {
     }
 
     public static void do3dLut(Context context, Bitmap inputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
         ScriptIntrinsic3DLUT script3dLut = ScriptIntrinsic3DLUT.create(

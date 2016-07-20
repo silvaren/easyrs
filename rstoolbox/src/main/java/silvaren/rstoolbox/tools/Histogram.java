@@ -10,7 +10,7 @@ import android.support.v8.renderscript.ScriptIntrinsicHistogram;
 class Histogram {
 
     public static int[] luminanceHistogram(Context context, Bitmap inputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32(bitmapRSContext.rs),
                 Constants.COLOR_DEPTH);
 
@@ -26,7 +26,7 @@ class Histogram {
     }
 
     public static int[] rgbaHistograms(Context context, Bitmap inputBitmap) {
-        BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32_4(bitmapRSContext.rs),
                 Constants.COLOR_DEPTH);
 
