@@ -3,6 +3,7 @@ package silvaren.rstoolbox.tools;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 public class Blur {
@@ -19,17 +20,22 @@ public class Blur {
         return outputBitmap;
     }
 
-    private static void doBlur(Context context, Bitmap inputBitmap, Bitmap outputBitmap, float radius) {
+    private static void doBlur(Context context, Bitmap inputBitmap, Bitmap outputBitmap,
+                               float radius) {
         BitmapRSContext bitmapRSContext = BitmapRSContext.createFromBitmap(inputBitmap, context);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
-                bitmapRSContext.rs,
-                bitmapRSContext.bitmapElement);
-        blurScript.setInput(bitmapRSContext.ain);
-        blurScript.setRadius(radius);
-        blurScript.forEach(aout);
+        runBlurKernel(bitmapRSContext.rs, bitmapRSContext.ain, aout, radius);
 
         aout.copyTo(outputBitmap);
+    }
+
+    private static void runBlurKernel(RenderScript rs, Allocation ain, Allocation aout,
+                                      float radius) {
+        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
+                rs, ain.getElement());
+        blurScript.setInput(ain);
+        blurScript.setRadius(radius);
+        blurScript.forEach(aout);
     }
 }
