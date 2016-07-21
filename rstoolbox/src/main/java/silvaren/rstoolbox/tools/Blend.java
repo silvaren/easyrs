@@ -222,4 +222,80 @@ class Blend {
     public static void xor(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
         doOp(context, srcBitmap, dstBitmap, xor);
     }
+
+    // NV21 methods
+    public static void add(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                           byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, add);
+    }
+
+    public static void clear(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, clear);
+    }
+
+    public static void dst(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, dst);
+    }
+
+    public static void dstAtop(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, dstAtop);
+    }
+
+    public static void dstIn(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, dstIn);
+    }
+
+    public static void dstOut(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, dstOut);
+    }
+
+    public static void dstOver(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, dstOver);
+    }
+
+    public static void multiply(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, multiply);
+    }
+
+    public static void src(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, src);
+    }
+
+    public static void srcAtop(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, srcAtop);
+    }
+
+    public static void srcIn(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, srcIn);
+    }
+
+    public static void srcOut(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, srcOut);
+    }
+
+    public static void srcOver(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, srcOver);
+    }
+
+    public static void subtract(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, subtract);
+    }
+
+    public static void xor(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                            byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, xor);
+    }
 }
