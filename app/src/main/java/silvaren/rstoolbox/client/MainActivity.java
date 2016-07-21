@@ -11,6 +11,7 @@ import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
 
+import silvaren.rstoolbox.tools.Blur;
 import silvaren.rstoolbox.tools.Nv21Image;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,24 +49,8 @@ public class MainActivity extends AppCompatActivity {
 //        Lut3D.do3dLut(this, sampleBitmap);
         Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
 
-        RenderScript rs = RenderScript.create(this);
-        Type.Builder tb = new Type.Builder(rs, Element.createPixel(rs,
-                Element.DataType.UNSIGNED_8, Element.DataKind.PIXEL_YUV));
-        tb.setX(nv21Image.width);
-        tb.setY(nv21Image.height);
-        tb.setYuvFormat(android.graphics.ImageFormat.NV21);
-        Allocation yuvAllocation = Allocation.createTyped(rs, tb.create(), Allocation.USAGE_SCRIPT);
-        yuvAllocation.copyFrom(nv21Image.nv21ByteArray);
+        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
 
-        Allocation aout = Allocation.createTyped(rs, yuvAllocation.getType());
-
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
-                rs,
-                yuvAllocation.getElement());
-        blurScript.setInput(yuvAllocation);
-        blurScript.setRadius(25.f);
-        blurScript.forEach(aout);
-        aout.copyTo(nv21Image.nv21ByteArray);
         Bitmap outBitmap = Nv21Image.nv21ToBitmap(sampleBitmap, nv21Image.nv21ByteArray);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
