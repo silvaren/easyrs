@@ -14,132 +14,152 @@ class Blend {
     private static BlendOp add = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachAdd(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachAdd(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp clear = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachClear(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachClear(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp dst = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachDst(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachDst(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp dstAtop = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachDstAtop(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachDstAtop(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp dstIn = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachDstIn(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachDstIn(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp dstOut = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachDstOut(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachDstOut(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp dstOver = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachDstOver(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachDstOver(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp multiply = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachMultiply(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachMultiply(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp src = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachSrc(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachSrc(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp srcAtop = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachSrcAtop(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachSrcAtop(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp srcIn = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachSrcIn(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachSrcIn(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp srcOut = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachSrcOut(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachSrcOut(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp srcOver = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachSrcOver(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachSrcOver(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp subtract = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachSubtract(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachSubtract(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
     private static BlendOp xor = new BlendOp() {
         @Override
         public void runOp(BaseSetup baseSetup) {
-            baseSetup.blendScript.forEachXor(baseSetup.bitmapRSContext.ain, baseSetup.aout);
+            baseSetup.blendScript.forEachXor(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
 
-    public static void doOp(Context context, Bitmap srcBitmap, Bitmap dstBitmap, BlendOp blendOp) {
-        BaseSetup baseSetup = BaseSetup.create(context, srcBitmap, dstBitmap);
+    private static void doOp(Context context, Bitmap srcBitmap, Bitmap dstBitmap, BlendOp blendOp) {
+        BaseSetup baseSetup = BaseSetup.createFromBitmap(context, srcBitmap, dstBitmap);
         blendOp.runOp(baseSetup);
         baseSetup.aout.copyTo(dstBitmap);
     }
 
+    private static void doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                             byte[] nv21ByteArrayDst, BlendOp blendOp) {
+        BaseSetup baseSetup = BaseSetup.createFromNv21Image(context, nv21ByteArraySrc, width, height,
+                nv21ByteArrayDst);
+        blendOp.runOp(baseSetup);
+        baseSetup.aout.copyTo(nv21ByteArrayDst);
+    }
+
     private static class BaseSetup {
-        public final RSToolboxContext bitmapRSContext;
+        public final RSToolboxContext rsToolboxContext;
         public final Allocation aout;
         public final ScriptIntrinsicBlend blendScript;
 
         private BaseSetup(RSToolboxContext bitmapRSContext, Allocation aout, ScriptIntrinsicBlend scriptIntrinsicBlend) {
-            this.bitmapRSContext = bitmapRSContext;
+            this.rsToolboxContext = bitmapRSContext;
             this.aout = aout;
             this.blendScript = scriptIntrinsicBlend;
         }
 
-        public static BaseSetup create(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
+        public static BaseSetup createFromBitmap(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
             RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, srcBitmap);
             Allocation aout = Allocation.createFromBitmap(bitmapRSContext.rs, dstBitmap);
 
             ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(
                     bitmapRSContext.rs, bitmapRSContext.ain.getElement());
             return new BaseSetup(bitmapRSContext, aout, blendScript);
+        }
+
+        public static BaseSetup createFromNv21Image(Context context, byte[] nv21ByteArraySrc,
+                                                    int width, int height, byte[] nv21ByteArrayDst) {
+            RSToolboxContext rsToolboxContext = RSToolboxContext.createFromNv21Image(context,
+                    nv21ByteArraySrc, width, height);
+            Allocation aout = Allocation.createTyped(rsToolboxContext.rs,
+                    rsToolboxContext.ain.getType());
+
+            ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(
+                    rsToolboxContext.rs, rsToolboxContext.ain.getElement());
+            return new BaseSetup(rsToolboxContext, aout, blendScript);
         }
     }
 
