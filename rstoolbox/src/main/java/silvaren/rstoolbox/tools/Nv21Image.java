@@ -89,11 +89,11 @@ public class Nv21Image {
         return new Nv21Image(yByteArray, yuvImage.getWidth(), yuvImage.getHeight());
     }
 
-    public static Bitmap nv21ToBitmap(Bitmap sampleBitmap, byte[] yByteArray) {
-        YuvImage yuvImage2 = new YuvImage(yByteArray, ImageFormat.NV21, sampleBitmap.getWidth(),
-                sampleBitmap.getHeight(), null);
+    public static Bitmap nv21ToBitmap(byte[] yByteArray, int width, int height) {
+        YuvImage yuvImage2 = new YuvImage(yByteArray, ImageFormat.NV21, width,
+                height, null);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        yuvImage2.compressToJpeg(new Rect(0, 0, sampleBitmap.getWidth(), sampleBitmap.getHeight()), 100,
+        yuvImage2.compressToJpeg(new Rect(0, 0, width, height), 100,
                 os);
         byte[] jpegBytes = os.toByteArray();
         return BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.length);

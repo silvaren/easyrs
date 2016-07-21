@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicBlend;
 
-class Blend {
+public class Blend {
 
     interface BlendOp {
         void runOp(BaseSetup baseSetup);
@@ -122,12 +122,13 @@ class Blend {
         baseSetup.aout.copyTo(dstBitmap);
     }
 
-    private static void doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
-                             byte[] nv21ByteArrayDst, BlendOp blendOp) {
-        BaseSetup baseSetup = BaseSetup.createFromNv21Image(context, nv21ByteArraySrc, width, height,
-                nv21ByteArrayDst);
-        blendOp.runOp(baseSetup);
-        baseSetup.aout.copyTo(nv21ByteArrayDst);
+    private static byte[] doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                               byte[] nv21ByteArrayDst, BlendOp blendOp) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArraySrc, width, height);
+        Bitmap dstBitmap = Nv21Image.nv21ToBitmap(nv21ByteArrayDst, width, height);
+        doOp(context, srcBitmap, dstBitmap, blendOp);
+        nv21ByteArrayDst = Nv21Image.convertToNV21(context, dstBitmap).nv21ByteArray;
+        return nv21ByteArrayDst;
     }
 
     private static class BaseSetup {
@@ -224,9 +225,9 @@ class Blend {
     }
 
     // NV21 methods
-    public static void add(Context context, byte[] nv21ByteArraySrc, int width, int height,
-                           byte[] nv21ByteArrayDst) {
-        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, add);
+    public static byte[] add(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                             byte[] nv21ByteArrayDst) {
+        return doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, add);
     }
 
     public static void clear(Context context, byte[] nv21ByteArraySrc, int width, int height,
