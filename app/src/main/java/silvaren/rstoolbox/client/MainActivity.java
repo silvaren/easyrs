@@ -4,15 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicBlur;
-import android.support.v8.renderscript.Type;
 import android.widget.ImageView;
 
 import silvaren.rstoolbox.tools.Blend;
-import silvaren.rstoolbox.tools.Blur;
+import silvaren.rstoolbox.tools.Convolve;
 import silvaren.rstoolbox.tools.Nv21Image;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,12 +47,15 @@ public class MainActivity extends AppCompatActivity {
 //        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
 
         Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
-        Nv21Image sampleEdgeNv21 = Nv21Image.convertToNV21(this, sampleEdgeBitmap);
-        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-                sampleEdgeNv21.nv21ByteArray);
+//        Nv21Image sampleEdgeNv21 = Nv21Image.convertToNV21(this, sampleEdgeBitmap);
+//        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
+//                sampleEdgeNv21.nv21ByteArray);
+//
+//        Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, sampleEdgeNv21.width,
+//                sampleEdgeNv21.height);
 
-        Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, sampleEdgeNv21.width,
-                sampleEdgeNv21.height);
+        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, nv21Image.nv21ByteArray,
+                nv21Image.width, nv21Image.height, Convolve.Kernels5x5.SOBEL_X);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(outBitmap);

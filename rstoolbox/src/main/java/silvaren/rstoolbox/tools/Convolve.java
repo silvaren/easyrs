@@ -6,9 +6,14 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve3x3;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 
-class Convolve {
+public class Convolve {
 
-    static class Kernels5x5 {
+    public static Bitmap convolve5x5(Context context, byte[] nv21ByteArray, int width, int height,
+                                     float[] sobelX) {
+        return null;
+    }
+
+    public static class Kernels5x5 {
         public static float[] SOBEL_X = {
                 1.f, 2.f, 0.f, -2.f, -1.f,
                 4.f, 8.f, 0.f, -8.f, -4.f,
