@@ -51,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
 //        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
 //                sampleEdgeNv21.nv21ByteArray);
 //
-//        Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, sampleEdgeNv21.width,
-//                sampleEdgeNv21.height);
 
-        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, nv21Image.nv21ByteArray,
+        Convolve.convolve5x5InPlace(this, nv21Image.nv21ByteArray,
                 nv21Image.width, nv21Image.height, Convolve.Kernels5x5.SOBEL_X);
+
+        Bitmap outBitmap = Nv21Image.nv21ToBitmap(nv21Image.nv21ByteArray, nv21Image.width,
+                nv21Image.height);
+
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(outBitmap);

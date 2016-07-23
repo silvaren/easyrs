@@ -8,9 +8,15 @@ import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 
 public class Convolve {
 
-    public static Bitmap convolve5x5(Context context, byte[] nv21ByteArray, int width, int height,
-                                     float[] sobelX) {
-        return null;
+    public static void convolve5x5InPlace(Context context, byte[] nv21ByteArray, int width, int height,
+                                     float[] coefficients) {
+        RSToolboxContext rsToolboxContext = RSToolboxContext.createFromNv21Image(context,
+                nv21ByteArray, width, height);
+        Allocation aout = Allocation.createTyped(rsToolboxContext.rs, rsToolboxContext.ain.getType());
+
+        runConvolveScript(coefficients, rsToolboxContext, aout);
+
+        aout.copyTo(nv21ByteArray);
     }
 
     public static class Kernels5x5 {
@@ -46,13 +52,17 @@ public class Convolve {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
 
+        runConvolveScript(coefficients, bitmapRSContext, aout);
+
+        aout.copyTo(outputBitmap);
+    }
+
+    private static void runConvolveScript(float[] coefficients, RSToolboxContext bitmapRSContext, Allocation aout) {
         ScriptIntrinsicConvolve5x5 convolve5x5Script = ScriptIntrinsicConvolve5x5.create(
                 bitmapRSContext.rs, bitmapRSContext.ain.getElement());
         convolve5x5Script.setInput(bitmapRSContext.ain);
         convolve5x5Script.setCoefficients(coefficients);
         convolve5x5Script.forEach(aout);
-
-        aout.copyTo(outputBitmap);
     }
 
     public static void convolve3x3InPlace(Context context, Bitmap bitmap, float[] coefficients) {
