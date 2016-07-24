@@ -7,7 +7,7 @@ import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.ScriptIntrinsicHistogram;
 
 
-class Histogram {
+public class Histogram {
 
     public static int[] luminanceHistogram(Context context, Bitmap inputBitmap) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
@@ -40,5 +40,11 @@ class Histogram {
 
         // RGBA interleaved: [R0,G0,B0,A0,R1,G1,B1,A1...
         return histograms;
+    }
+
+    public static int[] rgbaHistograms(Context context, byte[] nv21ByteArray, int width, int height) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);
+        Bitmap.Config config = srcBitmap.getConfig();
+        return rgbaHistograms(context, srcBitmap);
     }
 }

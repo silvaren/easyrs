@@ -4,19 +4,23 @@ import android.graphics.Bitmap;
 
 public class Utils {
 
-    private Bitmap drawColorBitmap(Bitmap sampleBitmap, int color) {
+    public static Bitmap drawColorBitmap(Bitmap sampleBitmap, int color) {
         Bitmap outputBitmap = Bitmap.createBitmap(Constants.COLOR_DEPTH, Constants.COLOR_DEPTH,
                 Bitmap.Config.ARGB_8888);
         for (int x = 0; x < Constants.COLOR_DEPTH; x++) {
             for (int y = 0; y < Constants.COLOR_DEPTH; y++) {
-                outputBitmap.setPixel(x, y, color);
+                int c = 0xFF000000;
+                c |= x << 0;
+                c |= x << 8;
+                c |= x << 16;
+                outputBitmap.setPixel(x, y, c);
             }
         }
 
         return outputBitmap;
     }
 
-    private Bitmap drawHistograms(int[] histograms, int channels) {
+    public static Bitmap drawHistograms(int[] histograms, int channels) {
         Bitmap outputBitmap = Bitmap.createBitmap(Constants.COLOR_DEPTH * channels,
                 Constants.COLOR_DEPTH, Bitmap.Config.ARGB_8888);
 
@@ -29,15 +33,13 @@ public class Utils {
             maxes[c] = max;
         }
 
-
-        for (int x = 0; x < Constants.COLOR_DEPTH * channels; x++) {
-            for (int y = 0; y < Constants.COLOR_DEPTH; y++) {
+        for (int y = 0; y < Constants.COLOR_DEPTH; y++) {
+            for (int x = 0; x < Constants.COLOR_DEPTH * channels; x++) {
                 int c = x / Constants.COLOR_DEPTH;
                 int i = x % Constants.COLOR_DEPTH;
-                int height = Constants.COLOR_DEPTH - 1 - (int) (histograms[c + i * channels] *
-                        (Constants.COLOR_DEPTH - 1.f) / maxes[c]);
-                int color = y > height? 0xFF000000 : 0xFFFFFFFF;
-                outputBitmap.setPixel(x, y, color);
+                int height = (int) ((histograms[c + i * channels] / maxes[c]) * (Constants.COLOR_DEPTH - 1.f));
+                int color = y < height? 0xFF000000 : 0xFFFFFFFF;
+                outputBitmap.setPixel(x, Constants.COLOR_DEPTH - 1 -y, color);
             }
         }
 

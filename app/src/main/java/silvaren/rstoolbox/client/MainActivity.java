@@ -8,7 +8,9 @@ import android.widget.ImageView;
 
 import silvaren.rstoolbox.tools.Blend;
 import silvaren.rstoolbox.tools.Convolve;
+import silvaren.rstoolbox.tools.Histogram;
 import silvaren.rstoolbox.tools.Nv21Image;
+import silvaren.rstoolbox.tools.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,33 +35,42 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
 //        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
 //        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, sampleBitmap, Convolve.Kernels5x5.SOBEL_X);
+
 //        Bitmap colorBitmap = drawColorBitmap(sampleBitmap, 0xFFFF0000);
 //        int[] histograms = Histogram.rgbaHistograms(this, colorBitmap);
 //        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
 //        Bitmap histogramsBitmap = drawHistograms(histograms, 4);
 //        Bitmap histogramBitmap = drawHistograms(histogram, 1);
+
 //        Nv21Image nv21Image = Nv21Image.generateSample();
 //        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
 //        ColorMatrix.convertToGrayscaleInPlace(this, sampleBitmap);
 //        Bitmap mappedBitmap = Lut.negativeEffect(this, sampleBitmap);
 //        Lut3D.do3dLut(this, sampleBitmap);
 
-//        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
-
         Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
+//        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
 //        Nv21Image sampleEdgeNv21 = Nv21Image.convertToNV21(this, sampleEdgeBitmap);
 //        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
 //                sampleEdgeNv21.nv21ByteArray);
 //
+//        Convolve.convolve5x5InPlace(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height, Convolve.Kernels5x5.SOBEL_X);
+//        int[] histograms = Histogram.rgbaHistograms(this, colorBitmap);
 
-        Convolve.convolve5x5InPlace(this, nv21Image.nv21ByteArray,
-                nv21Image.width, nv21Image.height, Convolve.Kernels5x5.SOBEL_X);
+        Bitmap colorBitmap = Utils.drawColorBitmap(sampleBitmap, 0xFF000000);
+        Nv21Image colorNv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
+        int[] histograms = Histogram.rgbaHistograms(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
+//        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
+        Bitmap histogramsBitmap = Utils.drawHistograms(histograms, 4);
+//        Bitmap histogramBitmap = Utils.drawHistograms(histogram, 1);
 
-        Bitmap outBitmap = Nv21Image.nv21ToBitmap(nv21Image.nv21ByteArray, nv21Image.width,
-                nv21Image.height);
+
+        Bitmap outBitmap = Nv21Image.nv21ToBitmap(colorNv21Image.nv21ByteArray, colorNv21Image.width,
+                colorNv21Image.height);
 
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(outBitmap);
+        imageView.setImageBitmap(histogramsBitmap);
     }
 }
