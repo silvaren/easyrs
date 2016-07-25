@@ -60,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap colorBitmap = Utils.drawColorBitmap(sampleBitmap, 0xFF000000);
         Nv21Image colorNv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
-        int[] histograms = Histogram.rgbaHistograms(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
-//        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
-        Bitmap histogramsBitmap = Utils.drawHistograms(histograms, 4);
-//        Bitmap histogramBitmap = Utils.drawHistograms(histogram, 1);
+//        int[] histograms = Histogram.rgbaHistograms(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
+        int[] histogram = Histogram.luminanceHistogram(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
+//        Bitmap histogramsBitmap = Utils.drawHistograms(histograms, 4);
+        Bitmap histogramBitmap = Utils.drawHistograms(histogram, 1);
 
 
         Bitmap outBitmap = Nv21Image.nv21ToBitmap(colorNv21Image.nv21ByteArray, colorNv21Image.width,
@@ -71,6 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(histogramsBitmap);
+        imageView.setImageBitmap(histogramBitmap);
     }
 }
