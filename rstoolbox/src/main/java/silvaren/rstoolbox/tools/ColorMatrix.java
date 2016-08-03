@@ -19,6 +19,12 @@ public class ColorMatrix {
         return outputBitmap;
     }
 
+    public static byte[] doConvertToGrayScale(Context context, byte[] nv21ByteArray, int width, int height) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);
+        convertToGrayscaleInPlace(context, srcBitmap);
+        return Nv21Image.convertToNV21(context, srcBitmap).nv21ByteArray;
+    }
+
     public static Bitmap rgbToYuv(Context context, Bitmap inputBitmap) {
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
