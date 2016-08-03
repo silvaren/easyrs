@@ -13,6 +13,7 @@ import silvaren.rstoolbox.tools.ColorMatrix;
 import silvaren.rstoolbox.tools.Convolve;
 import silvaren.rstoolbox.tools.Histogram;
 import silvaren.rstoolbox.tools.Lut;
+import silvaren.rstoolbox.tools.Lut3D;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.RSToolboxContext;
 import silvaren.rstoolbox.tools.Utils;
@@ -72,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
 //        byte[] result = ColorMatrix.doConvertToGrayScale(this, nv21Image.nv21ByteArray,
 //                nv21Image.width, nv21Image.height);
-        byte[] result = Lut.negativeEffect(this, nv21Image.nv21ByteArray,
+//        byte[] result = Lut.negativeEffect(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height);
+        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
                 nv21Image.width, nv21Image.height);
-
-        Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, nv21Image.width,
+        Bitmap outBitmap = Nv21Image.nv21ToBitmap(nv21Image.nv21ByteArray, nv21Image.width,
                 nv21Image.height);
-
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(outBitmap);
