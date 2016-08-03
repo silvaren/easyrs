@@ -12,6 +12,7 @@ import silvaren.rstoolbox.tools.Blend;
 import silvaren.rstoolbox.tools.ColorMatrix;
 import silvaren.rstoolbox.tools.Convolve;
 import silvaren.rstoolbox.tools.Histogram;
+import silvaren.rstoolbox.tools.Lut;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.RSToolboxContext;
 import silvaren.rstoolbox.tools.Utils;
@@ -69,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap histogramsBitmap = Utils.drawHistograms(histograms, 4);
 //        Bitmap histogramBitmap = Utils.drawHistograms(histogram, 1);
 
-        byte[] result = ColorMatrix.doConvertToGrayScale(this, nv21Image.nv21ByteArray,
+//        byte[] result = ColorMatrix.doConvertToGrayScale(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height);
+        byte[] result = Lut.negativeEffect(this, nv21Image.nv21ByteArray,
                 nv21Image.width, nv21Image.height);
 
         Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, nv21Image.width,

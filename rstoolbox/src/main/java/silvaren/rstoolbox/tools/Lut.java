@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicLUT;
 
-class Lut {
+public class Lut {
     public static Bitmap negativeEffect(Context context, Bitmap inputBitmap) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Bitmap.Config config = inputBitmap.getConfig();
@@ -25,5 +25,11 @@ class Lut {
 
         aout.copyTo(outputBitmap);
         return outputBitmap;
+    }
+
+    public static byte[] negativeEffect(Context context, byte[] nv21ByteArray, int width, int height) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);
+        Bitmap outputBmp = negativeEffect(context, srcBitmap);
+        return Nv21Image.convertToNV21(context, outputBmp).nv21ByteArray;
     }
 }
