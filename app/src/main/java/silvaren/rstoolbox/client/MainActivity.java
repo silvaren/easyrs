@@ -16,6 +16,7 @@ import silvaren.rstoolbox.tools.Lut;
 import silvaren.rstoolbox.tools.Lut3D;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.RSToolboxContext;
+import silvaren.rstoolbox.tools.Resize;
 import silvaren.rstoolbox.tools.Utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
 //                nv21Image.width, nv21Image.height);
 //        byte[] result = Lut.negativeEffect(this, nv21Image.nv21ByteArray,
 //                nv21Image.width, nv21Image.height);
-        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
-                nv21Image.width, nv21Image.height);
-        Bitmap outBitmap = Nv21Image.nv21ToBitmap(nv21Image.nv21ByteArray, nv21Image.width,
-                nv21Image.height);
+//        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height);
+        byte[] result = Resize.resize(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 50, 50);
+        Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, 50, 50);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(outBitmap);
