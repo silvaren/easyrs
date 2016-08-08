@@ -6,88 +6,90 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve3x3;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 
-public class Convolve {
+public class Convolve extends BaseTool<ConvolveParams> {
 
-    public static void convolve5x5InPlace(Context context, byte[] nv21ByteArray, int width, int height,
-                                     float[] coefficients) {
-        RSToolboxContext rsToolboxContext = RSToolboxContext.createFromNv21Image(context,
-                nv21ByteArray, width, height);
-        Allocation aout = Allocation.createTyped(rsToolboxContext.rs, rsToolboxContext.ain.getType());
-
-        runConvolveScript(coefficients, rsToolboxContext, aout);
-
-        aout.copyTo(nv21ByteArray);
+    interface ConvolveScript {
+        void runConvolveScript(RSToolboxContext rsToolboxContext, Allocation aout, ConvolveParams scriptParams);
     }
 
-    public static class Kernels5x5 {
-        public static float[] SOBEL_X = {
-                1.f, 2.f, 0.f, -2.f, -1.f,
-                4.f, 8.f, 0.f, -8.f, -4.f,
-                6.f, 12.f, 1.f, -12.f, -6.f,
-                4.f, 8.f, 0.f, -8.f, -4.f,
-                1.f, 2.f, 0.f, -2.f, -1.f};
+    private final ConvolveScript convolveScript;
+
+    Convolve(ConvolveScript convolveScript) {
+        this.convolveScript = convolveScript;
     }
 
-    static class Kernels3x3 {
-        public static float[] SOBEL_X = {
-                1.f, 0.f, -1.f,
-                2.f, 1.f, -2.f,
-                1.f, 0.f, -1.f};
+    @Override
+    protected void runScript(RSToolboxContext rsToolboxContext, Allocation aout, ConvolveParams scriptParams) {
+        this.convolveScript.runConvolveScript(rsToolboxContext, aout, scriptParams);
     }
 
-    public static void convolve5x5InPlace(Context context, Bitmap bitmap, float[] coefficients) {
-        doConvolve5x5(context, bitmap, bitmap, coefficients);
+    private static ConvolveScript convolve3x3Script = new ConvolveScript() {
+        @Override
+        public void runConvolveScript(RSToolboxContext rsToolboxContext, Allocation aout, ConvolveParams scriptParams) {
+            ScriptIntrinsicConvolve3x3 convolve3x3Script = ScriptIntrinsicConvolve3x3.create(
+                    rsToolboxContext.rs, rsToolboxContext.ain.getElement());
+            convolve3x3Script.setInput(rsToolboxContext.ain);
+            convolve3x3Script.setCoefficients(scriptParams.coefficients);
+            convolve3x3Script.forEach(aout);
+        }
+    };
+
+    private static ConvolveScript convolve5x5Script = new ConvolveScript() {
+        @Override
+        public void runConvolveScript(RSToolboxContext rsToolboxContext, Allocation aout, ConvolveParams scriptParams) {
+            ScriptIntrinsicConvolve5x5 convolve5x5Script = ScriptIntrinsicConvolve5x5.create(
+                    rsToolboxContext.rs, rsToolboxContext.ain.getElement());
+            convolve5x5Script.setInput(rsToolboxContext.ain);
+            convolve5x5Script.setCoefficients(scriptParams.coefficients);
+            convolve5x5Script.forEach(aout);
+        }
+    };
+
+    public static void convolveInPlace3x3(Context context, Bitmap bitmap, float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve3x3Script);
+        convolve.doComputationInPlace(context, bitmap, new ConvolveParams(coefficients));
     }
 
-    public static Bitmap convolve5x5(Context context, Bitmap inputBitmap, float[] coefficients) {
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                config);
-        doConvolve5x5(context, inputBitmap, outputBitmap, coefficients);
-        return outputBitmap;
+    public static Bitmap convolve3x3(Context context, Bitmap bitmap, float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve3x3Script);
+        return convolve.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
-    private static void doConvolve5x5(Context context, Bitmap inputBitmap, Bitmap outputBitmap,
-                                      float[] coefficients) {
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
-
-        runConvolveScript(coefficients, bitmapRSContext, aout);
-
-        aout.copyTo(outputBitmap);
+    public static void convolveInPlace3x3inPlace(Context context, byte[] nv21ByteArray, int width,
+                                                 int height, float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve3x3Script);
+        convolve.doComputationInPlace(context, nv21ByteArray, width, height,
+                new ConvolveParams(coefficients));
     }
 
-    private static void runConvolveScript(float[] coefficients, RSToolboxContext bitmapRSContext, Allocation aout) {
-        ScriptIntrinsicConvolve5x5 convolve5x5Script = ScriptIntrinsicConvolve5x5.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-        convolve5x5Script.setInput(bitmapRSContext.ain);
-        convolve5x5Script.setCoefficients(coefficients);
-        convolve5x5Script.forEach(aout);
+    public static byte[] convolveInPlace3x3(Context context, byte[] nv21ByteArray, int width, int height,
+                                            float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve3x3Script);
+        return convolve.doComputation(context, nv21ByteArray, width, height,
+                new ConvolveParams(coefficients));
     }
 
-    public static void convolve3x3InPlace(Context context, Bitmap bitmap, float[] coefficients) {
-        doConvolve5x5(context, bitmap, bitmap, coefficients);
+    public static void convolveInPlace5x5(Context context, Bitmap bitmap, float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve5x5Script);
+        convolve.doComputationInPlace(context, bitmap, new ConvolveParams(coefficients));
     }
 
-    public static Bitmap convolve3x3(Context context, Bitmap inputBitmap, float[] coefficients) {
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                config);
-        doConvolve3x3(context, inputBitmap, outputBitmap, coefficients);
-        return outputBitmap;
+    public static Bitmap convolve5x5(Context context, Bitmap bitmap, float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve5x5Script);
+        return convolve.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
-    private static void doConvolve3x3(Context context, Bitmap inputBitmap, Bitmap outputBitmap,
-                                      float[] coefficients) {
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
+    public static void convolveInPlace5x5inPlace(Context context, byte[] nv21ByteArray, int width,
+                                                 int height, float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve5x5Script);
+        convolve.doComputationInPlace(context, nv21ByteArray, width, height,
+                new ConvolveParams(coefficients));
+    }
 
-        ScriptIntrinsicConvolve3x3 convolve5x5Script = ScriptIntrinsicConvolve3x3.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-        convolve5x5Script.setInput(bitmapRSContext.ain);
-        convolve5x5Script.setCoefficients(coefficients);
-        convolve5x5Script.forEach(aout);
-
-        aout.copyTo(outputBitmap);
+    public static byte[] convolveInPlace5x5(Context context, byte[] nv21ByteArray, int width, int height,
+                                            float[] coefficients) {
+        Convolve convolve = new Convolve(Convolve.convolve5x5Script);
+        return convolve.doComputation(context, nv21ByteArray, width, height,
+                new ConvolveParams(coefficients));
     }
 }
