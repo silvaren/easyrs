@@ -6,59 +6,36 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
-public class Blur {
+public class Blur extends BaseTool<BlurParams> {
 
     public static void blurInPlace(Context context, Bitmap bitmap, float radius) {
-        doBlur(context, bitmap, bitmap, radius);
+        Blur blurTool = new Blur();
+        blurTool.doComputationInPlace(context, bitmap, new BlurParams(radius));
+    }
+
+    public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
+        Blur blurTool = new Blur();
+        return blurTool.doComputation(context, inputBitmap, new BlurParams(radius));
     }
 
     public static void blurInPlace(Context context, byte[] nv21ByteArray, int width, int height,
                                    float radius) {
-        doBlur(context, nv21ByteArray, width, height, nv21ByteArray, radius);
-    }
-
-    public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                config);
-        doBlur(context, inputBitmap, outputBitmap, radius);
-        return outputBitmap;
+        Blur blurTool = new Blur();
+        blurTool.doComputationInPlace(context, nv21ByteArray, width, height, new BlurParams(radius));
     }
 
     public static byte[] blur(Context context, byte[] nv21ByteArray, int width, int height,
                               float radius) {
-        byte[] outputNv21ByteArray = new byte[nv21ByteArray.length];
-        doBlur(context, nv21ByteArray, width, height, outputNv21ByteArray, radius);
-        return outputNv21ByteArray;
+        Blur blurTool = new Blur();
+        return blurTool.doComputation(context, nv21ByteArray, width, height, new BlurParams(radius));
     }
 
-    private static void doBlur(Context context, Bitmap inputBitmap, Bitmap outputBitmap,
-                               float radius) {
-        RSToolboxContext rsToolboxContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
-        Allocation aout = Allocation.createTyped(rsToolboxContext.rs, rsToolboxContext.ain.getType());
-
-        runBlurKernel(rsToolboxContext.rs, rsToolboxContext.ain, aout, radius);
-
-        aout.copyTo(outputBitmap);
-    }
-
-    private static void doBlur(Context context, byte[] nv21ByteArray, int width, int height,
-                               byte[] outputNv21ByteArray, float radius) {
-        RSToolboxContext rsToolboxContext = RSToolboxContext.createFromNv21Image(context,
-                nv21ByteArray, width, height);
-        Allocation aout = Allocation.createTyped(rsToolboxContext.rs, rsToolboxContext.ain.getType());
-
-        runBlurKernel(rsToolboxContext.rs, rsToolboxContext.ain, aout, radius);
-
-        aout.copyTo(outputNv21ByteArray);
-    }
-
-    private static void runBlurKernel(RenderScript rs, Allocation ain, Allocation aout,
-                                      float radius) {
+    @Override
+    protected void runScript(RSToolboxContext rsToolboxContext, Allocation aout, BlurParams scriptParams) {
         ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
-                rs, ain.getElement());
-        blurScript.setInput(ain);
-        blurScript.setRadius(radius);
+                rsToolboxContext.rs, rsToolboxContext.ain.getElement());
+        blurScript.setInput(rsToolboxContext.ain);
+        blurScript.setRadius(scriptParams.radius);
         blurScript.forEach(aout);
     }
 }
