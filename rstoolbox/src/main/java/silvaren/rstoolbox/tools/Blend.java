@@ -7,6 +7,42 @@ import android.support.v8.renderscript.ScriptIntrinsicBlend;
 
 public class Blend {
 
+    private static void doOp(Context context, Bitmap srcBitmap, Bitmap dstBitmap, BlendOp blendOp) {
+        BaseSetup baseSetup = BaseSetup.createFromBitmap(context, srcBitmap, dstBitmap);
+        blendOp.runOp(baseSetup);
+        baseSetup.aout.copyTo(dstBitmap);
+    }
+
+    private static byte[] doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                               byte[] nv21ByteArrayDst, BlendOp blendOp) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArraySrc, width, height);
+        Bitmap dstBitmap = Nv21Image.nv21ToBitmap(nv21ByteArrayDst, width, height);
+        doOp(context, srcBitmap, dstBitmap, blendOp);
+        nv21ByteArrayDst = Nv21Image.convertToNV21(context, dstBitmap).nv21ByteArray;
+        return nv21ByteArrayDst;
+    }
+
+    private static class BaseSetup {
+        public final RSToolboxContext rsToolboxContext;
+        public final Allocation aout;
+        public final ScriptIntrinsicBlend blendScript;
+
+        private BaseSetup(RSToolboxContext bitmapRSContext, Allocation aout, ScriptIntrinsicBlend scriptIntrinsicBlend) {
+            this.rsToolboxContext = bitmapRSContext;
+            this.aout = aout;
+            this.blendScript = scriptIntrinsicBlend;
+        }
+
+        public static BaseSetup createFromBitmap(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
+            RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, srcBitmap);
+            Allocation aout = Allocation.createFromBitmap(bitmapRSContext.rs, dstBitmap);
+
+            ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(
+                    bitmapRSContext.rs, bitmapRSContext.ain.getElement());
+            return new BaseSetup(bitmapRSContext, aout, blendScript);
+        }
+    }
+
     interface BlendOp {
         void runOp(BaseSetup baseSetup);
     }
@@ -115,42 +151,6 @@ public class Blend {
             baseSetup.blendScript.forEachXor(baseSetup.rsToolboxContext.ain, baseSetup.aout);
         }
     };
-
-    private static void doOp(Context context, Bitmap srcBitmap, Bitmap dstBitmap, BlendOp blendOp) {
-        BaseSetup baseSetup = BaseSetup.createFromBitmap(context, srcBitmap, dstBitmap);
-        blendOp.runOp(baseSetup);
-        baseSetup.aout.copyTo(dstBitmap);
-    }
-
-    private static byte[] doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
-                               byte[] nv21ByteArrayDst, BlendOp blendOp) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArraySrc, width, height);
-        Bitmap dstBitmap = Nv21Image.nv21ToBitmap(nv21ByteArrayDst, width, height);
-        doOp(context, srcBitmap, dstBitmap, blendOp);
-        nv21ByteArrayDst = Nv21Image.convertToNV21(context, dstBitmap).nv21ByteArray;
-        return nv21ByteArrayDst;
-    }
-
-    private static class BaseSetup {
-        public final RSToolboxContext rsToolboxContext;
-        public final Allocation aout;
-        public final ScriptIntrinsicBlend blendScript;
-
-        private BaseSetup(RSToolboxContext bitmapRSContext, Allocation aout, ScriptIntrinsicBlend scriptIntrinsicBlend) {
-            this.rsToolboxContext = bitmapRSContext;
-            this.aout = aout;
-            this.blendScript = scriptIntrinsicBlend;
-        }
-
-        public static BaseSetup createFromBitmap(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
-            RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, srcBitmap);
-            Allocation aout = Allocation.createFromBitmap(bitmapRSContext.rs, dstBitmap);
-
-            ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(
-                    bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-            return new BaseSetup(bitmapRSContext, aout, blendScript);
-        }
-    }
 
     public static void add(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
         doOp(context, srcBitmap, dstBitmap, add);
