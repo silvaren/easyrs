@@ -15,6 +15,7 @@ public class Convolve extends BaseTool<ConvolveParams> {
     private final ConvolveScript convolveScript;
 
     Convolve(ConvolveScript convolveScript) {
+        super(tool);
         this.convolveScript = convolveScript;
     }
 

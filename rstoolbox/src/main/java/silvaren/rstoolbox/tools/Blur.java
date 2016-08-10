@@ -3,10 +3,13 @@ package silvaren.rstoolbox.tools;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 public class Blur extends BaseTool<BlurParams> {
+
+    public Blur() {
+        super(tool);
+    }
 
     public static void blurInPlace(Context context, Bitmap bitmap, float radius) {
         Blur blurTool = new Blur();

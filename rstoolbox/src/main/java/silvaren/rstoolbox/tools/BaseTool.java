@@ -4,7 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 
-public abstract class BaseTool<T> {
+public class BaseTool<T> {
+
+    protected BaseTool(BaseToolScript tool) {
+        this.tool = tool;
+    }
+
+    interface BaseToolScript<T> {
+        void runScript(RSToolboxContext rsToolboxContext, Allocation aout, T scriptParams);
+    }
+
+    private final BaseToolScript tool;
 
     protected void doComputationInPlace(Context context, Bitmap inputBitmap, T scriptParams) {
         doComputation(context, inputBitmap, inputBitmap, scriptParams);
@@ -23,7 +33,7 @@ public abstract class BaseTool<T> {
 
         Allocation aout = Allocation.createTyped(rsToolboxContext.rs, rsToolboxContext.ain.getType());
 
-        runScript(rsToolboxContext, aout, scriptParams);
+        this.tool.runScript(rsToolboxContext, aout, scriptParams);
 
         aout.copyTo(outputBitmap);
 
@@ -50,12 +60,10 @@ public abstract class BaseTool<T> {
 
         Allocation aout = Allocation.createTyped(rsToolboxContext.rs, rsToolboxContext.ain.getType());
 
-        runScript(rsToolboxContext, aout, scriptParams);
+        this.tool.runScript(rsToolboxContext, aout, scriptParams);
 
         aout.copyTo(outputNv21ByteArray);
 
         return outputNv21ByteArray;
     }
-
-    protected abstract void runScript(RSToolboxContext rsToolboxContext, Allocation aout, T scriptParams);
 }
