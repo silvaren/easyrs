@@ -7,6 +7,13 @@ import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 public class Blur {
 
+    static class BlurParams {
+        public final float radius;
+        public BlurParams(float radius) {
+            this.radius = radius;
+        }
+    }
+
     private static BaseTool.BaseToolScript blurToolScript = new BaseTool.BaseToolScript<BlurParams>() {
         @Override
         public void runScript(RSToolboxContext rsToolboxContext, Allocation aout, BlurParams scriptParams) {
