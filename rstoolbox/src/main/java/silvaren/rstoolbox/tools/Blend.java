@@ -150,18 +150,6 @@ public class Blend {
                     bitmapRSContext.rs, bitmapRSContext.ain.getElement());
             return new BaseSetup(bitmapRSContext, aout, blendScript);
         }
-
-        public static BaseSetup createFromNv21Image(Context context, byte[] nv21ByteArraySrc,
-                                                    int width, int height, byte[] nv21ByteArrayDst) {
-            RSToolboxContext rsToolboxContext = RSToolboxContext.createFromNv21Image(context,
-                    nv21ByteArraySrc, width, height);
-            Allocation aout = Allocation.createTyped(rsToolboxContext.rs,
-                    rsToolboxContext.ain.getType());
-
-            ScriptIntrinsicBlend blendScript = ScriptIntrinsicBlend.create(
-                    rsToolboxContext.rs, rsToolboxContext.ain.getElement());
-            return new BaseSetup(rsToolboxContext, aout, blendScript);
-        }
     }
 
     public static void add(Context context, Bitmap srcBitmap, Bitmap dstBitmap) {
