@@ -27,7 +27,7 @@ public class BaseTool<T> {
         return doComputation(context, inputBitmap, outputBitmap, scriptParams);
     }
 
-    protected Bitmap doComputation(Context context, Bitmap inputBitmap, Bitmap outputBitmap, T scriptParams) {
+    private Bitmap doComputation(Context context, Bitmap inputBitmap, Bitmap outputBitmap, T scriptParams) {
 
         RSToolboxContext rsToolboxContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
 

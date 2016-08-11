@@ -2,59 +2,63 @@ package silvaren.rstoolbox.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 
 public class ColorMatrix {
 
+    private static BaseTool.BaseToolScript colorMatrixToolScript = new BaseTool.BaseToolScript<ColorMatrixParams>() {
+        @Override
+        public void runScript(RSToolboxContext rsToolboxContext, Allocation aout, ColorMatrixParams scriptParams) {
+            ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
+                    rsToolboxContext.rs, rsToolboxContext.ain.getElement());
+            scriptParams.setColorMatrixParams(colorMatrixScript);
+            colorMatrixScript.forEach(rsToolboxContext.ain, aout);
+        }
+    };
+
+    @NonNull
+    private static ConvertingTool<ColorMatrixParams> createConvertingTool() {
+        BaseTool<ColorMatrixParams> baseTool = new BaseTool<>(colorMatrixToolScript);
+        return new ConvertingTool<>(baseTool);
+    }
+
+    private static Bitmap doColorMatrixComputation(Context context, Bitmap inputBitmap,
+                                                   ColorMatrixParams.Operation op) {
+        ConvertingTool<ColorMatrixParams> colorMatrixTool = createConvertingTool();
+        return colorMatrixTool.baseTool.doComputation(context, inputBitmap, new ColorMatrixParams(op));
+    }
+
+    private static void doColorMatrixComputationInPlace(Context context, Bitmap inputBitmap,
+                                                   ColorMatrixParams.Operation op) {
+        ConvertingTool<ColorMatrixParams> colorMatrixTool = createConvertingTool();
+        colorMatrixTool.baseTool.doComputationInPlace(context, inputBitmap, new ColorMatrixParams(op));
+    }
+
     public static void convertToGrayscaleInPlace(Context context, Bitmap bitmap) {
-        doConvertToGrayscale(context, bitmap, bitmap);
+        doColorMatrixComputationInPlace(context, bitmap, ColorMatrixParams.Operation.GRAYSCALE);
     }
 
     public static Bitmap doConvertToGrayScale(Context context, Bitmap inputBitmap) {
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                config);
-        doConvertToGrayscale(context, inputBitmap, outputBitmap);
-        return outputBitmap;
-    }
-
-    public static byte[] doConvertToGrayScale(Context context, byte[] nv21ByteArray, int width, int height) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);
-        convertToGrayscaleInPlace(context, srcBitmap);
-        return Nv21Image.convertToNV21(context, srcBitmap).nv21ByteArray;
+        return doColorMatrixComputation(context, inputBitmap, ColorMatrixParams.Operation.GRAYSCALE);
     }
 
     public static Bitmap rgbToYuv(Context context, Bitmap inputBitmap) {
-        Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
-                config);
-        doRgbToYuv(context, inputBitmap, outputBitmap);
-        return outputBitmap;
+        return doColorMatrixComputation(context, inputBitmap, ColorMatrixParams.Operation.RGB_TO_YUV);
     }
 
-    private static void doConvertToGrayscale(Context context, Bitmap inputBitmap, Bitmap outputBitmap) {
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
+    public static byte[] doConvertToGrayScale(Context context, byte[] nv21ByteArray, int width, int height) {
+        ConvertingTool<ColorMatrixParams> convertingTool = createConvertingTool();
+        return convertingTool.doComputation(context, nv21ByteArray, width, height,
+                new ColorMatrixParams(ColorMatrixParams.Operation.GRAYSCALE));
 
-        ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-        colorMatrixScript.setGreyscale();
-        colorMatrixScript.forEach(bitmapRSContext.ain, aout);
-
-        aout.copyTo(outputBitmap);
     }
 
-    private static void doRgbToYuv(Context context, Bitmap inputBitmap, Bitmap outputBitmap) {
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
-        Allocation aout = Allocation.createTyped(bitmapRSContext.rs, bitmapRSContext.ain.getType());
-
-        ScriptIntrinsicColorMatrix colorMatrixScript = ScriptIntrinsicColorMatrix.create(
-                bitmapRSContext.rs, bitmapRSContext.ain.getElement());
-        colorMatrixScript.setRGBtoYUV();
-        colorMatrixScript.setAdd(0.0f, 0.5f, 0.5f, 0.0f);
-        colorMatrixScript.forEach(bitmapRSContext.ain, aout);
-
-        aout.copyTo(outputBitmap);
+    public static void doConvertToGrayScaleInPlace(Context context, byte[] nv21ByteArray, int width, int height) {
+        ConvertingTool<ColorMatrixParams> convertingTool = createConvertingTool();
+        convertingTool.doComputationInPlace(context, nv21ByteArray, width, height,
+                new ColorMatrixParams(ColorMatrixParams.Operation.GRAYSCALE));
     }
+
 }
