@@ -30,16 +30,6 @@ public class ColorMatrix {
         return colorMatrixTool.baseTool.doComputation(context, inputBitmap, new ColorMatrixParams(op));
     }
 
-    private static void doColorMatrixComputationInPlace(Context context, Bitmap inputBitmap,
-                                                   ColorMatrixParams.Operation op) {
-        ConvertingTool<ColorMatrixParams> colorMatrixTool = createConvertingTool();
-        colorMatrixTool.baseTool.doComputationInPlace(context, inputBitmap, new ColorMatrixParams(op));
-    }
-
-    public static void convertToGrayscaleInPlace(Context context, Bitmap bitmap) {
-        doColorMatrixComputationInPlace(context, bitmap, ColorMatrixParams.Operation.GRAYSCALE);
-    }
-
     public static Bitmap doConvertToGrayScale(Context context, Bitmap inputBitmap) {
         return doColorMatrixComputation(context, inputBitmap, ColorMatrixParams.Operation.GRAYSCALE);
     }
@@ -54,11 +44,4 @@ public class ColorMatrix {
                 new ColorMatrixParams(ColorMatrixParams.Operation.GRAYSCALE));
 
     }
-
-    public static void doConvertToGrayScaleInPlace(Context context, byte[] nv21ByteArray, int width, int height) {
-        ConvertingTool<ColorMatrixParams> convertingTool = createConvertingTool();
-        convertingTool.doComputationInPlace(context, nv21ByteArray, width, height,
-                new ColorMatrixParams(ColorMatrixParams.Operation.GRAYSCALE));
-    }
-
 }

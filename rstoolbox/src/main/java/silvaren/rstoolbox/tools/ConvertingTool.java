@@ -18,13 +18,6 @@ public class ConvertingTool<T> {
         return outputNv21ByteArray;
     }
 
-    protected byte[] doComputationInPlace(Context context, byte[] nv21ByteArray, int width, int height,
-                                   T scriptParams) {
-        byte[] outputNv21ByteArray = new byte[nv21ByteArray.length];
-        doComputation(context, nv21ByteArray, width, height, outputNv21ByteArray, scriptParams);
-        return outputNv21ByteArray;
-    }
-
     private void doComputation(Context context, byte[] nv21ByteArray, int width, int height,
                                    byte[] outputNv21ByteArray, T scriptParams) {
         Bitmap bitmapFromNv21 = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);

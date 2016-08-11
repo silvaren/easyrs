@@ -25,20 +25,9 @@ public class Blur {
         }
     };
 
-    public static void blurInPlace(Context context, Bitmap bitmap, float radius) {
-        BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);
-        blurTool.doComputationInPlace(context, bitmap, new BlurParams(radius));
-    }
-
     public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
         BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);
         return blurTool.doComputation(context, inputBitmap, new BlurParams(radius));
-    }
-
-    public static void blurInPlace(Context context, byte[] nv21ByteArray, int width, int height,
-                                   float radius) {
-        BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);
-        blurTool.doComputationInPlace(context, nv21ByteArray, width, height, new BlurParams(radius));
     }
 
     public static byte[] blur(Context context, byte[] nv21ByteArray, int width, int height,

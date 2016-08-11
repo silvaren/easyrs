@@ -44,21 +44,9 @@ public class Convolve {
         }
     };
 
-    public static void convolveInPlace3x3(Context context, Bitmap bitmap, float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
-        convolveTool.doComputationInPlace(context, bitmap, new ConvolveParams(coefficients));
-    }
-
     public static Bitmap convolve3x3(Context context, Bitmap bitmap, float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
-    }
-
-    public static void convolveInPlace3x3inPlace(Context context, byte[] nv21ByteArray, int width,
-                                                 int height, float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
-        convolveTool.doComputationInPlace(context, nv21ByteArray, width, height,
-                new ConvolveParams(coefficients));
     }
 
     public static byte[] convolveInPlace3x3(Context context, byte[] nv21ByteArray, int width, int height,
@@ -68,21 +56,9 @@ public class Convolve {
                 new ConvolveParams(coefficients));
     }
 
-    public static void convolveInPlace5x5(Context context, Bitmap bitmap, float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
-        convolveTool.doComputationInPlace(context, bitmap, new ConvolveParams(coefficients));
-    }
-
     public static Bitmap convolve5x5(Context context, Bitmap bitmap, float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
-    }
-
-    public static void convolveInPlace5x5inPlace(Context context, byte[] nv21ByteArray, int width,
-                                                 int height, float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
-        convolveTool.doComputationInPlace(context, nv21ByteArray, width, height,
-                new ConvolveParams(coefficients));
     }
 
     public static byte[] convolveInPlace5x5(Context context, byte[] nv21ByteArray, int width, int height,

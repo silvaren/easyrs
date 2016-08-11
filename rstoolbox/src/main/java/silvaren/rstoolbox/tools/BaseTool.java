@@ -16,10 +16,6 @@ public class BaseTool<T> {
 
     private final BaseToolScript tool;
 
-    protected void doComputationInPlace(Context context, Bitmap inputBitmap, T scriptParams) {
-        doComputation(context, inputBitmap, inputBitmap, scriptParams);
-    }
-
     protected Bitmap doComputation(Context context, Bitmap inputBitmap, T scriptParams) {
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
@@ -38,12 +34,6 @@ public class BaseTool<T> {
         aout.copyTo(outputBitmap);
 
         return outputBitmap;
-    }
-
-    protected void doComputationInPlace(Context context, byte[] nv21ByteArray, int width,
-                                   int height, T scriptParams) {
-        doComputation(context, nv21ByteArray, width, height, nv21ByteArray,
-                scriptParams);
     }
 
     protected byte[] doComputation(Context context, byte[] nv21ByteArray, int width,
