@@ -27,7 +27,7 @@ public class Resize {
 
     public static byte[] resize(Context context, byte[] nv21ByteArray, int width, int height,
                                 int targetWidth, int targetHeight) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
         Bitmap resizedBitmap = resize(context, srcBitmap, targetWidth, targetHeight);
         return Nv21Image.convertToNV21(context, resizedBitmap).nv21ByteArray;
     }

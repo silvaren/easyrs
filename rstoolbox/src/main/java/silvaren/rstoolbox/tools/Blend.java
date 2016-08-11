@@ -15,8 +15,8 @@ public class Blend {
 
     private static byte[] doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
                                byte[] nv21ByteArrayDst, BlendOp blendOp) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArraySrc, width, height);
-        Bitmap dstBitmap = Nv21Image.nv21ToBitmap(nv21ByteArrayDst, width, height);
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArraySrc, width, height);
+        Bitmap dstBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArrayDst, width, height);
         doOp(context, srcBitmap, dstBitmap, blendOp);
         nv21ByteArrayDst = Nv21Image.convertToNV21(context, dstBitmap).nv21ByteArray;
         return nv21ByteArrayDst;

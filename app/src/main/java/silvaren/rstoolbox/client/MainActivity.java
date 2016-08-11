@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 //        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
 //                nv21Image.width, nv21Image.height);
         byte[] result = Resize.resize(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 50, 50);
-        Bitmap outBitmap = Nv21Image.nv21ToBitmap(result, 50, 50);
+        Bitmap outBitmap = Nv21Image.nv21ToBitmap(this, result, 50, 50);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageBitmap(outBitmap);

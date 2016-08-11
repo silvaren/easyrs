@@ -40,7 +40,7 @@ public class Lut3D {
     }
 
     public static void do3dLut(Context context, byte[] nv21ByteArray, int width, int height) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(nv21ByteArray, width, height);
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
         do3dLut(context, srcBitmap);
         Nv21Image resultNv21 = Nv21Image.convertToNV21(context, srcBitmap);
         System.arraycopy(resultNv21.nv21ByteArray,0,nv21ByteArray,0,nv21ByteArray.length);
