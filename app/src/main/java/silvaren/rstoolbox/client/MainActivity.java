@@ -4,27 +4,32 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
+import android.support.v7.widget.AppCompatSpinner;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import silvaren.rstoolbox.tools.Blend;
-import silvaren.rstoolbox.tools.ColorMatrix;
-import silvaren.rstoolbox.tools.Convolve;
-import silvaren.rstoolbox.tools.Histogram;
-import silvaren.rstoolbox.tools.Lut;
-import silvaren.rstoolbox.tools.Lut3D;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import silvaren.rstoolbox.tools.Nv21Image;
-import silvaren.rstoolbox.tools.RSToolboxContext;
 import silvaren.rstoolbox.tools.Resize;
-import silvaren.rstoolbox.tools.Utils;
 
 public class MainActivity extends AppCompatActivity {
+
+    @BindView(R.id.script_spinner)
+    AppCompatSpinner spinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.planets_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
     }
 
     @Override
