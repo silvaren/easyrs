@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsic3DLUT;
 
+import hugo.weaving.DebugLog;
+
 public class Lut3D {
 
     private static BaseTool.BaseToolScript lut3DToolScript = new BaseTool.BaseToolScript<Lut3DParams>() {
@@ -24,12 +26,14 @@ public class Lut3D {
         return new ConvertingTool<>(baseTool);
     }
 
+    @DebugLog
     public static Bitmap do3dLut(Context context, Bitmap inputBitmap) {
         ConvertingTool<Lut3DParams> lutTool = createConvertingTool();
         return lutTool.baseTool.doComputation(context, inputBitmap,
                 new Lut3DParams());
     }
 
+    @DebugLog
     public static byte[] do3dLut(Context context, byte[] nv21ByteArray, int width, int height) {
         ConvertingTool<Lut3DParams> lutTool = createConvertingTool();
         return lutTool.doComputation(context, nv21ByteArray, width, height,

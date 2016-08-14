@@ -8,6 +8,7 @@
     <string name="histogram">Histogram</string>
     <string name="lut">LUT</string>
     <string name="lut3d">LUT 3D</string>
+    <string name="resize">Resize</string>
 
     <string-array name="tools_array">
         <item>@string/blend</item>
@@ -17,5 +18,6 @@
         <item>@string/histogram</item>
         <item>@string/lut</item>
         <item>@string/lut3d</item>
+        <item>@string/resize</item>
     </string-array>
 </resources>

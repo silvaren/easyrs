@@ -12,11 +12,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
+import hugo.weaving.DebugLog;
+
 class YuvToRgb {
     public static Bitmap yuvToRgb(Context context, byte[] nv21ByteArray, int width, int height) {
         return yuvToRgb(context, new Nv21Image(nv21ByteArray, width, height));
     }
 
+    @DebugLog
     public static Bitmap yuvToRgb(Context context, Nv21Image nv21Image) {
         RenderScript rs = RenderScript.create(context);
 

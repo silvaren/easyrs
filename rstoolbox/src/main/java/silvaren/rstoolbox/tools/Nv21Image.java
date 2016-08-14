@@ -15,6 +15,7 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import hugo.weaving.DebugLog;
 import silvaren.rstoolbox.scripts.ScriptC_channel;
 import silvaren.rstoolbox.scripts.ScriptC_uvencode;
 
@@ -47,6 +48,7 @@ public class Nv21Image {
         return new Nv21Image(nv21ByteArray, width, height);
     }
 
+    @DebugLog
     public static Nv21Image convertToNV21(Context context, Bitmap sampleBitmap) {
         long startTime = System.currentTimeMillis();
         Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);

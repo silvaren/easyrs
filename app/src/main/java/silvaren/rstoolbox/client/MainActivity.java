@@ -23,6 +23,11 @@ import silvaren.rstoolbox.tools.Blur;
 import silvaren.rstoolbox.tools.ColorMatrix;
 import silvaren.rstoolbox.tools.Convolve;
 import silvaren.rstoolbox.tools.ConvolveParams;
+import silvaren.rstoolbox.tools.Histogram;
+import silvaren.rstoolbox.tools.Lut;
+import silvaren.rstoolbox.tools.Lut3D;
+import silvaren.rstoolbox.tools.Resize;
+import silvaren.rstoolbox.tools.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -151,12 +156,45 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private ImageProcess histogramProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            int[] histograms = Histogram.rgbaHistograms(context, bitmap);
+            return Utils.drawHistograms(histograms, 4);
+        }
+    };
+
+    private ImageProcess lutProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return Lut.negativeEffect(context, bitmap);
+        }
+    };
+
+    private ImageProcess lut3dProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return Lut3D.do3dLut(context, bitmap);
+        }
+    };
+
+    private ImageProcess resizeProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return Resize.resize(context, bitmap, 50, 50);
+        }
+    };
+
     private Map<String, ImageProcess> processMap() {
         HashMap<String, ImageProcess> processMap = new HashMap<>();
         processMap.put(getString(R.string.blend), blendProcess);
         processMap.put(getString(R.string.blur), blurProcess);
         processMap.put(getString(R.string.colormatrix), colorMatrixProcess);
         processMap.put(getString(R.string.convolve), convolveProcess);
+        processMap.put(getString(R.string.histogram), histogramProcess);
+        processMap.put(getString(R.string.lut), lutProcess);
+        processMap.put(getString(R.string.lut3d), lut3dProcess);
+        processMap.put(getString(R.string.resize), resizeProcess);
         return processMap;
     }
 
