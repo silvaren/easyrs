@@ -1,5 +1,6 @@
 package silvaren.rstoolbox.client;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.google.common.base.Optional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,6 +108,23 @@ public class MainActivity extends AppCompatActivity {
 //        imageView.setImageBitmap(outBitmap);
     }
 
+    interface ImageProcess {
+        Bitmap processImage(Context context, Bitmap bitmap);
+    }
+
+    private ImageProcess blurProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return Blur.blur(context, bitmap, 25.f);
+        }
+    };
+
+    private Map<String, ImageProcess> processMap() {
+        HashMap<String, ImageProcess> processMap = new HashMap<>();
+        processMap.put(getString(R.string.blur), blurProcess);
+        return processMap;
+    }
+
     private Bitmap loadBitmap() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
@@ -113,9 +134,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processImage(Bitmap sampleBitmap, String selectedItem) {
-        if (selectedItem.equals(getString(R.string.blur))) {
-            Bitmap outputBitmap = Blur.blur(this, sampleBitmap, 25.f);
-            imageView.setImageBitmap(outputBitmap);
-        }
+        Optional<ImageProcess> imageProcess = Optional.fromNullable(processMap().get(selectedItem));
+        if (imageProcess.isPresent())
+            imageView.setImageBitmap(imageProcess.get().processImage(this, sampleBitmap));
     }
 }
