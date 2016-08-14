@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.hugo'
 
 android {
     compileSdkVersion 23
@@ -27,6 +28,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile group: 'com.jakewharton', name: 'butterknife', version: '8.2.1'
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
+    compile group: 'com.google.guava', name: 'guava', version: '19.0'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile project(':rstoolbox')
 }

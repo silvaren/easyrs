@@ -1,13 +1,21 @@
 <resources>
     <string name="app_name">RSToolbox Demo</string>
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+
+    <string name="blend">Blend</string>
+    <string name="blur">Blur</string>
+    <string name="colormatrix">ColorMatrix</string>
+    <string name="convolve">Convolve</string>
+    <string name="histogram">Histogram</string>
+    <string name="lut">LUT</string>
+    <string name="lut3d">LUT 3D</string>
+
+    <string-array name="tools_array">
+        <item>@string/blend</item>
+        <item>@string/blur</item>
+        <item>@string/colormatrix</item>
+        <item>@string/convolve</item>
+        <item>@string/histogram</item>
+        <item>@string/lut</item>
+        <item>@string/lut3d</item>
     </string-array>
 </resources>

@@ -1,8 +1,10 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.hugo'
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
+    defaultPublishConfig "debug"
 
     defaultConfig {
         minSdkVersion 16

@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
+import hugo.weaving.DebugLog;
+
 public class Blur {
 
     static class BlurParams {
@@ -25,11 +27,13 @@ public class Blur {
         }
     };
 
+    @DebugLog
     public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
         BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);
         return blurTool.doComputation(context, inputBitmap, new BlurParams(radius));
     }
 
+    @DebugLog
     public static byte[] blur(Context context, byte[] nv21ByteArray, int width, int height,
                               float radius) {
         BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);

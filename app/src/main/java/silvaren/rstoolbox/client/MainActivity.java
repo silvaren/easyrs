@@ -8,16 +8,23 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.google.common.base.Optional;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import silvaren.rstoolbox.tools.Nv21Image;
-import silvaren.rstoolbox.tools.Resize;
+import butterknife.OnItemSelected;
+import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.Blur;
 
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.script_spinner)
     AppCompatSpinner spinner;
 
+    @BindView(R.id.imageView)
+    ImageView imageView;
+
+    private Optional<Bitmap> sampleBitmap = Optional.absent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,22 +32,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.planets_array, android.R.layout.simple_spinner_item);
+                R.array.tools_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
     }
 
+    @OnItemSelected(R.id.script_spinner)
+    public void submit() {
+        String selectedItem = (String) spinner.getSelectedItem();
+        if (!sampleBitmap.isPresent())
+            sampleBitmap = Optional.of(loadBitmap());
+        processImage(sampleBitmap.get(), selectedItem);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
-        options.inDither = false;
-        options.inPurgeable = true;
-        Bitmap sampleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
-        Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample_edge, options);
+        sampleBitmap = Optional.of(loadBitmap());
+//        Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample_edge, options);
+
+        String selectedItem = (String) spinner.getSelectedItem();
+        processImage(sampleBitmap.get(), selectedItem);
 
 
 //        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
@@ -60,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 //        Bitmap mappedBitmap = Lut.negativeEffect(this, sampleBitmap);
 //        Lut3D.do3dLut(this, sampleBitmap);
 
-        Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
+//        Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
 //        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
 //        Nv21Image sampleEdgeNv21 = Nv21Image.convertToNV21(this, sampleEdgeBitmap);
 //        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
@@ -83,10 +97,25 @@ public class MainActivity extends AppCompatActivity {
 //                nv21Image.width, nv21Image.height);
 //        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
 //                nv21Image.width, nv21Image.height);
-        byte[] result = Resize.resize(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 50, 50);
-        Bitmap outBitmap = Nv21Image.nv21ToBitmap(this, result, 50, 50);
+//        byte[] result = Resize.resize(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 50, 50);
+//        Bitmap outBitmap = Nv21Image.nv21ToBitmap(this, result, 50, 50);
 
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setImageBitmap(outBitmap);
+//        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+//        imageView.setImageBitmap(outBitmap);
+    }
+
+    private Bitmap loadBitmap() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        options.inDither = false;
+        options.inPurgeable = true;
+        return BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
+    }
+
+    private void processImage(Bitmap sampleBitmap, String selectedItem) {
+        if (selectedItem.equals(getString(R.string.blur))) {
+            Bitmap outputBitmap = Blur.blur(this, sampleBitmap, 25.f);
+            imageView.setImageBitmap(outputBitmap);
+        }
     }
 }
