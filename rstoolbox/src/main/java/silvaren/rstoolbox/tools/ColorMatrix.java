@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 
+import hugo.weaving.DebugLog;
+
 public class ColorMatrix {
 
     private static BaseTool.BaseToolScript colorMatrixToolScript = new BaseTool.BaseToolScript<ColorMatrixParams>() {
@@ -30,15 +32,18 @@ public class ColorMatrix {
         return colorMatrixTool.baseTool.doComputation(context, inputBitmap, new ColorMatrixParams(op));
     }
 
-    public static Bitmap doConvertToGrayScale(Context context, Bitmap inputBitmap) {
+    @DebugLog
+    public static Bitmap convertToGrayScale(Context context, Bitmap inputBitmap) {
         return doColorMatrixComputation(context, inputBitmap, ColorMatrixParams.Operation.GRAYSCALE);
     }
 
+    @DebugLog
     public static Bitmap rgbToYuv(Context context, Bitmap inputBitmap) {
         return doColorMatrixComputation(context, inputBitmap, ColorMatrixParams.Operation.RGB_TO_YUV);
     }
 
-    public static byte[] doConvertToGrayScale(Context context, byte[] nv21ByteArray, int width, int height) {
+    @DebugLog
+    public static byte[] convertToGrayScale(Context context, byte[] nv21ByteArray, int width, int height) {
         ConvertingTool<ColorMatrixParams> convertingTool = createConvertingTool();
         return convertingTool.doComputation(context, nv21ByteArray, width, height,
                 new ColorMatrixParams(ColorMatrixParams.Operation.GRAYSCALE));

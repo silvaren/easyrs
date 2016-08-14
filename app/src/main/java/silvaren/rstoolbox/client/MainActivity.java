@@ -18,7 +18,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
 import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.Blend;
 import silvaren.rstoolbox.tools.Blur;
+import silvaren.rstoolbox.tools.ColorMatrix;
+import silvaren.rstoolbox.tools.Convolve;
+import silvaren.rstoolbox.tools.ConvolveParams;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -112,6 +116,20 @@ public class MainActivity extends AppCompatActivity {
         Bitmap processImage(Context context, Bitmap bitmap);
     }
 
+    private ImageProcess blendProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4;
+            options.inDither = false;
+            options.inPurgeable = true;
+            Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.sample_edge, options);
+            Blend.add(context, bitmap, sampleEdgeBitmap);
+            return sampleEdgeBitmap;
+        }
+    };
+
     private ImageProcess blurProcess = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap) {
@@ -119,9 +137,26 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private ImageProcess colorMatrixProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return ColorMatrix.convertToGrayScale(context, bitmap);
+        }
+    };
+
+    private ImageProcess convolveProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return Convolve.convolve5x5(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
+        }
+    };
+
     private Map<String, ImageProcess> processMap() {
         HashMap<String, ImageProcess> processMap = new HashMap<>();
+        processMap.put(getString(R.string.blend), blendProcess);
         processMap.put(getString(R.string.blur), blurProcess);
+        processMap.put(getString(R.string.colormatrix), colorMatrixProcess);
+        processMap.put(getString(R.string.convolve), convolveProcess);
         return processMap;
     }
 

@@ -1,6 +1,6 @@
 package silvaren.rstoolbox.tools;
 
-class ConvolveParams {
+public class ConvolveParams {
 
     public static class Kernels5x5 {
         public static float[] SOBEL_X = {

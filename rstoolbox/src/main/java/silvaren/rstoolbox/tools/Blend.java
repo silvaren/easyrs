@@ -5,14 +5,18 @@ import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicBlend;
 
+import hugo.weaving.DebugLog;
+
 public class Blend {
 
+    @DebugLog
     private static void doOp(Context context, Bitmap srcBitmap, Bitmap dstBitmap, BlendOp blendOp) {
         BaseSetup baseSetup = BaseSetup.createFromBitmap(context, srcBitmap, dstBitmap);
         blendOp.runOp(baseSetup);
         baseSetup.aout.copyTo(dstBitmap);
     }
 
+    @DebugLog
     private static byte[] doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
                                byte[] nv21ByteArrayDst, BlendOp blendOp) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArraySrc, width, height);

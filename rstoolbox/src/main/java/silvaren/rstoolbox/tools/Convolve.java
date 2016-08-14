@@ -6,6 +6,8 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve3x3;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 
+import hugo.weaving.DebugLog;
+
 public class Convolve {
 
     interface ConvolveScript {
@@ -44,11 +46,13 @@ public class Convolve {
         }
     };
 
+    @DebugLog
     public static Bitmap convolve3x3(Context context, Bitmap bitmap, float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
+    @DebugLog
     public static byte[] convolveInPlace3x3(Context context, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
@@ -56,11 +60,13 @@ public class Convolve {
                 new ConvolveParams(coefficients));
     }
 
+    @DebugLog
     public static Bitmap convolve5x5(Context context, Bitmap bitmap, float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
+    @DebugLog
     public static byte[] convolveInPlace5x5(Context context, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
