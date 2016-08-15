@@ -33,6 +33,23 @@ class ImageProcesses {
         return flavorMap;
     }
 
+    static Map<String, ImageProcess> processMap(Context context) {
+        HashMap<String, ImageProcess> processMap = new HashMap<>();
+        processMap.put(context.getString(R.string.original), originalProcess);
+        processMap.put(context.getString(R.string.blend), blendProcess);
+        processMap.put(context.getString(R.string.blur), blurProcess);
+        processMap.put(context.getString(R.string.grayscale), colorMatrixGraycaleProcess);
+        processMap.put(context.getString(R.string.rgbtoyuv), colorMatrixRgbtoYuvProcess);
+        processMap.put(context.getString(R.string.sobel3x3), convolveSobel3x3Process);
+        processMap.put(context.getString(R.string.sobel5x5), convolveSobel5x5Process);
+        processMap.put(context.getString(R.string.rgba_histogram), rgbaHistogramProcess);
+        processMap.put(context.getString(R.string.lum_histogram), lumHistogramProcess);
+        processMap.put(context.getString(R.string.lut), lutProcess);
+        processMap.put(context.getString(R.string.lut3d), lut3dProcess);
+        processMap.put(context.getString(R.string.resize), resizeProcess);
+        return processMap;
+    }
+
     private static ImageProcess blendProcess = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap) {
@@ -44,6 +61,13 @@ class ImageProcesses {
                     R.drawable.sample_edge, options);
             Blend.add(context, bitmap, sampleEdgeBitmap);
             return sampleEdgeBitmap;
+        }
+    };
+
+    private static ImageProcess originalProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return bitmap;
         }
     };
 
@@ -71,7 +95,7 @@ class ImageProcesses {
     private static ImageProcess convolveSobel3x3Process = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap) {
-            return Convolve.convolve3x3(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
+            return Convolve.convolve3x3(context, bitmap, ConvolveParams.Kernels3x3.SOBEL_X);
         }
     };
 
@@ -118,21 +142,5 @@ class ImageProcesses {
             return Resize.resize(context, bitmap, 50, 50);
         }
     };
-
-    static Map<String, ImageProcess> processMap(Context context) {
-        HashMap<String, ImageProcess> processMap = new HashMap<>();
-        processMap.put(context.getString(R.string.blend), blendProcess);
-        processMap.put(context.getString(R.string.blur), blurProcess);
-        processMap.put(context.getString(R.string.grayscale), colorMatrixGraycaleProcess);
-        processMap.put(context.getString(R.string.rgbtoyuv), colorMatrixRgbtoYuvProcess);
-        processMap.put(context.getString(R.string.sobel3x3), convolveSobel3x3Process);
-        processMap.put(context.getString(R.string.sobel5x5), convolveSobel5x5Process);
-        processMap.put(context.getString(R.string.rgba_histogram), rgbaHistogramProcess);
-        processMap.put(context.getString(R.string.lum_histogram), lumHistogramProcess);
-        processMap.put(context.getString(R.string.lut), lutProcess);
-        processMap.put(context.getString(R.string.lut3d), lut3dProcess);
-        processMap.put(context.getString(R.string.resize), resizeProcess);
-        return processMap;
-    }
 
 }

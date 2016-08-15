@@ -11,7 +11,7 @@ public class ConvolveParams {
                 1.f, 2.f, 0.f, -2.f, -1.f};
     }
 
-    static class Kernels3x3 {
+    public static class Kernels3x3 {
         public static float[] SOBEL_X = {
                 1.f, 0.f, -1.f,
                 2.f, 1.f, -2.f,
