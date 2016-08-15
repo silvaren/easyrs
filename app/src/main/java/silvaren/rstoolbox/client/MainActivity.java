@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
@@ -17,7 +18,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
-import hugo.weaving.DebugLog;
 import silvaren.rstoolbox.tools.Blend;
 import silvaren.rstoolbox.tools.Blur;
 import silvaren.rstoolbox.tools.ColorMatrix;
@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.imageView)
     ImageView imageView;
 
+    @BindView(R.id.script_flavor_spinner)
+    AppCompatSpinner flavorSpinner;
+
     private Optional<Bitmap> sampleBitmap = Optional.absent();
 
     @Override
@@ -46,75 +49,41 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.tools_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
     }
 
     @OnItemSelected(R.id.script_spinner)
-    public void submit() {
+    public void scriptSpinnerListen() {
         String selectedItem = (String) spinner.getSelectedItem();
-        if (!sampleBitmap.isPresent())
-            sampleBitmap = Optional.of(loadBitmap());
-        processImage(sampleBitmap.get(), selectedItem);
+        updateFlavor(selectedItem);
+        processImage(selectedItem);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        sampleBitmap = Optional.of(loadBitmap());
-//        Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample_edge, options);
+    @OnItemSelected(R.id.script_flavor_spinner)
+    public void flavorSpinnerListen() {
+        String selectedItem = (String) flavorSpinner.getSelectedItem();
+        processImage(selectedItem);
+    }
 
-        String selectedItem = (String) spinner.getSelectedItem();
-        processImage(sampleBitmap.get(), selectedItem);
+    private void updateFlavor(String selectedItem) {
+        Map<String, Integer> flavorMap = flavorMap();
+        Optional<Integer> stringArrayId = Optional.fromNullable(flavorMap.get(selectedItem));
+        if (stringArrayId.isPresent()) {
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                    stringArrayId.get(), android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            flavorSpinner.setAdapter(adapter);
+            flavorSpinner.setVisibility(View.VISIBLE);
+        } else {
+            flavorSpinner.setVisibility(View.GONE);
+        }
+    }
 
-
-//        Bitmap blurredBitmap = blur(sampleBitmap, 25.f, this);
-//        Bitmap resizedBitmap = resize(this, sampleBitmap, 50, 50);
-//        Blend.add(this, sampleBitmap, sampleEdgeBitmap);
-//        Bitmap convolved5x5Bitmap = Convolve.convolve5x5(this, sampleBitmap, Convolve.Kernels5x5.SOBEL_X);
-
-//        Bitmap colorBitmap = drawColorBitmap(sampleBitmap, 0xFFFF0000);
-//        int[] histograms = Histogram.rgbaHistograms(this, colorBitmap);
-//        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
-//        Bitmap histogramsBitmap = drawHistograms(histograms, 4);
-//        Bitmap histogramBitmap = drawHistograms(histogram, 1);
-
-//        Nv21Image nv21Image = Nv21Image.generateSample();
-//        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
-//        ColorMatrix.convertToGrayscaleInPlace(this, sampleBitmap);
-//        Bitmap mappedBitmap = Lut.negativeEffect(this, sampleBitmap);
-//        Lut3D.do3dLut(this, sampleBitmap);
-
-//        Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
-//        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
-//        Nv21Image sampleEdgeNv21 = Nv21Image.convertToNV21(this, sampleEdgeBitmap);
-//        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-//                sampleEdgeNv21.nv21ByteArray);
-//
-//        Convolve.convolve5x5InPlace(this, nv21Image.nv21ByteArray,
-//                nv21Image.width, nv21Image.height, Convolve.Kernels5x5.SOBEL_X);
-//        int[] histograms = Histogram.rgbaHistograms(this, colorBitmap);
-
-//        Bitmap colorBitmap = Utils.drawColorBitmap(sampleBitmap, 0xFF000000);
-//        Nv21Image colorNv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
-//        int[] histograms = Histogram.rgbaHistograms(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
-//        int[] histogram = Histogram.luminanceHistogram(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
-//        Bitmap histogramsBitmap = Utils.drawHistograms(histograms, 4);
-//        Bitmap histogramBitmap = Utils.drawHistograms(histogram, 1);
-
-//        byte[] result = ColorMatrix.doConvertToGrayScale(this, nv21Image.nv21ByteArray,
-//                nv21Image.width, nv21Image.height);
-//        byte[] result = Lut.negativeEffect(this, nv21Image.nv21ByteArray,
-//                nv21Image.width, nv21Image.height);
-//        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
-//                nv21Image.width, nv21Image.height);
-//        byte[] result = Resize.resize(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 50, 50);
-//        Bitmap outBitmap = Nv21Image.nv21ToBitmap(this, result, 50, 50);
-
-//        ImageView imageView = (ImageView) findViewById(R.id.imageView);
-//        imageView.setImageBitmap(outBitmap);
+    private Map<String, Integer> flavorMap() {
+        HashMap<String, Integer> flavorMap = new HashMap<>();
+        flavorMap.put(getString(R.string.colormatrix), R.array.colormatrix_array);
+        return flavorMap;
     }
 
     interface ImageProcess {
@@ -142,7 +111,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private ImageProcess colorMatrixProcess = new ImageProcess() {
+    private ImageProcess colorMatrixRgbtoYuvProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return ColorMatrix.rgbToYuv(context, bitmap);
+        }
+    };
+
+    private ImageProcess colorMatrixGraycaleProcess = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap) {
             return ColorMatrix.convertToGrayScale(context, bitmap);
@@ -189,7 +165,8 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, ImageProcess> processMap = new HashMap<>();
         processMap.put(getString(R.string.blend), blendProcess);
         processMap.put(getString(R.string.blur), blurProcess);
-        processMap.put(getString(R.string.colormatrix), colorMatrixProcess);
+        processMap.put(getString(R.string.grayscale), colorMatrixGraycaleProcess);
+        processMap.put(getString(R.string.rgbtoyuv), colorMatrixRgbtoYuvProcess);
         processMap.put(getString(R.string.convolve), convolveProcess);
         processMap.put(getString(R.string.histogram), histogramProcess);
         processMap.put(getString(R.string.lut), lutProcess);
@@ -206,9 +183,60 @@ public class MainActivity extends AppCompatActivity {
         return BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
     }
 
-    private void processImage(Bitmap sampleBitmap, String selectedItem) {
+    private void processImage(String selectedItem) {
+        if (!sampleBitmap.isPresent())
+            sampleBitmap = Optional.of(loadBitmap());
+
         Optional<ImageProcess> imageProcess = Optional.fromNullable(processMap().get(selectedItem));
         if (imageProcess.isPresent())
-            imageView.setImageBitmap(imageProcess.get().processImage(this, sampleBitmap));
+            imageView.setImageBitmap(imageProcess.get().processImage(this, sampleBitmap.get()));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sampleBitmap = Optional.of(loadBitmap());
+//        Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sample_edge, options);
+
+        String selectedItem = (String) spinner.getSelectedItem();
+        processImage(selectedItem);
+
+//        int[] histogram = Histogram.luminanceHistogram(this, sampleBitmap);
+//        Bitmap histogramBitmap = drawHistograms(histogram, 1);
+
+//        Nv21Image nv21Image = Nv21Image.generateSample();
+//        Bitmap outputBitmap = YuvToRgb.yuvToRgb(this, nv21Image);
+//        ColorMatrix.convertToGrayscaleInPlace(this, sampleBitmap);
+//        Bitmap mappedBitmap = Lut.negativeEffect(this, sampleBitmap);
+//        Lut3D.do3dLut(this, sampleBitmap);
+
+//        Nv21Image nv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
+//        Blur.blurInPlace(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
+//        Nv21Image sampleEdgeNv21 = Nv21Image.convertToNV21(this, sampleEdgeBitmap);
+//        byte[] result = Blend.add(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
+//                sampleEdgeNv21.nv21ByteArray);
+//
+//        Convolve.convolve5x5InPlace(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height, Convolve.Kernels5x5.SOBEL_X);
+//        int[] histograms = Histogram.rgbaHistograms(this, colorBitmap);
+
+//        Bitmap colorBitmap = Utils.drawColorBitmap(sampleBitmap, 0xFF000000);
+//        Nv21Image colorNv21Image = Nv21Image.convertToNV21(this, sampleBitmap);
+//        int[] histograms = Histogram.rgbaHistograms(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
+//        int[] histogram = Histogram.luminanceHistogram(this, colorNv21Image.nv21ByteArray, colorNv21Image.width, colorNv21Image.height);
+//        Bitmap histogramsBitmap = Utils.drawHistograms(histograms, 4);
+//        Bitmap histogramBitmap = Utils.drawHistograms(histogram, 1);
+
+//        byte[] result = ColorMatrix.doConvertToGrayScale(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height);
+//        byte[] result = Lut.negativeEffect(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height);
+//        Lut3D.do3dLut(this, nv21Image.nv21ByteArray,
+//                nv21Image.width, nv21Image.height);
+//        byte[] result = Resize.resize(this, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 50, 50);
+//        Bitmap outBitmap = Nv21Image.nv21ToBitmap(this, result, 50, 50);
+
+//        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+//        imageView.setImageBitmap(outBitmap);
     }
 }

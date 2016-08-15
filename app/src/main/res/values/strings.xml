@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">RSToolbox Demo</string>
 
+    <string name="bitmap">Bitmap</string>
+    <string name="nv21">NV21</string>
+
     <string name="blend">Blend</string>
     <string name="blur">Blur</string>
     <string name="colormatrix">ColorMatrix</string>
@@ -9,6 +12,9 @@
     <string name="lut">LUT</string>
     <string name="lut3d">LUT 3D</string>
     <string name="resize">Resize</string>
+
+    <string name="grayscale">Grayscale</string>
+    <string name="rgbtoyuv">RGB to YUV</string>
 
     <string-array name="tools_array">
         <item>@string/blend</item>
@@ -19,5 +25,10 @@
         <item>@string/lut</item>
         <item>@string/lut3d</item>
         <item>@string/resize</item>
+    </string-array>
+
+    <string-array name="colormatrix_array">
+        <item>@string/grayscale</item>
+        <item>@string/rgbtoyuv</item>
     </string-array>
 </resources>
