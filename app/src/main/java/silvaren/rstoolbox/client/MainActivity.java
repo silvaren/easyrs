@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Integer> flavorMap = new HashMap<>();
         flavorMap.put(getString(R.string.colormatrix), R.array.colormatrix_array);
         flavorMap.put(getString(R.string.convolve), R.array.convolve_array);
+        flavorMap.put(getString(R.string.histogram), R.array.histogram_array);
         return flavorMap;
     }
 
@@ -140,11 +141,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private ImageProcess histogramProcess = new ImageProcess() {
+    private ImageProcess rgbaHistogramProcess = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap) {
             int[] histograms = Histogram.rgbaHistograms(context, bitmap);
             return Utils.drawHistograms(histograms, 4);
+        }
+    };
+
+    private ImageProcess lumHistogramProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            int[] histogram = Histogram.luminanceHistogram(context, bitmap);
+            return Utils.drawHistograms(histogram, 1);
         }
     };
 
@@ -177,7 +186,8 @@ public class MainActivity extends AppCompatActivity {
         processMap.put(getString(R.string.rgbtoyuv), colorMatrixRgbtoYuvProcess);
         processMap.put(getString(R.string.sobel3x3), convolveSobel3x3Process);
         processMap.put(getString(R.string.sobel5x5), convolveSobel5x5Process);
-        processMap.put(getString(R.string.histogram), histogramProcess);
+        processMap.put(getString(R.string.rgba_histogram), rgbaHistogramProcess);
+        processMap.put(getString(R.string.lum_histogram), lumHistogramProcess);
         processMap.put(getString(R.string.lut), lutProcess);
         processMap.put(getString(R.string.lut3d), lut3dProcess);
         processMap.put(getString(R.string.resize), resizeProcess);
