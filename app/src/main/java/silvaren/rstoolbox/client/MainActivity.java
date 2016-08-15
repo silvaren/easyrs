@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private Map<String, Integer> flavorMap() {
         HashMap<String, Integer> flavorMap = new HashMap<>();
         flavorMap.put(getString(R.string.colormatrix), R.array.colormatrix_array);
+        flavorMap.put(getString(R.string.convolve), R.array.convolve_array);
         return flavorMap;
     }
 
@@ -125,7 +126,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private ImageProcess convolveProcess = new ImageProcess() {
+    private ImageProcess convolveSobel3x3Process = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap) {
+            return Convolve.convolve3x3(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
+        }
+    };
+
+    private ImageProcess convolveSobel5x5Process = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap) {
             return Convolve.convolve5x5(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
@@ -167,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
         processMap.put(getString(R.string.blur), blurProcess);
         processMap.put(getString(R.string.grayscale), colorMatrixGraycaleProcess);
         processMap.put(getString(R.string.rgbtoyuv), colorMatrixRgbtoYuvProcess);
-        processMap.put(getString(R.string.convolve), convolveProcess);
+        processMap.put(getString(R.string.sobel3x3), convolveSobel3x3Process);
+        processMap.put(getString(R.string.sobel5x5), convolveSobel5x5Process);
         processMap.put(getString(R.string.histogram), histogramProcess);
         processMap.put(getString(R.string.lut), lutProcess);
         processMap.put(getString(R.string.lut3d), lut3dProcess);

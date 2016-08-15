@@ -16,6 +16,9 @@
     <string name="grayscale">Grayscale</string>
     <string name="rgbtoyuv">RGB to YUV</string>
 
+    <string name="sobel3x3">Sobel 3x3</string>
+    <string name="sobel5x5">Sobel 5x5</string>
+
     <string-array name="tools_array">
         <item>@string/blend</item>
         <item>@string/blur</item>
@@ -30,5 +33,10 @@
     <string-array name="colormatrix_array">
         <item>@string/grayscale</item>
         <item>@string/rgbtoyuv</item>
+    </string-array>
+
+    <string-array name="convolve_array">
+        <item>@string/sobel3x3</item>
+        <item>@string/sobel5x5</item>
     </string-array>
 </resources>
