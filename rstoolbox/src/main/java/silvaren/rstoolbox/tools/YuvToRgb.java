@@ -19,7 +19,6 @@ class YuvToRgb {
         return yuvToRgb(context, new Nv21Image(nv21ByteArray, width, height));
     }
 
-    @DebugLog
     public static Bitmap yuvToRgb(Context context, Nv21Image nv21Image) {
         RenderScript rs = RenderScript.create(context);
 
@@ -31,22 +30,16 @@ class YuvToRgb {
         Allocation yuvAllocation = Allocation.createTyped(rs, tb.create(), Allocation.USAGE_SCRIPT);
         yuvAllocation.copyFrom(nv21Image.nv21ByteArray);
 
-        Type rgbType = Type.createXY(rs, Element.U8_4(rs), nv21Image.width, nv21Image.height);
+        Type rgbType = Type.createXY(rs, Element.RGBA_8888(rs), nv21Image.width, nv21Image.height);
         Allocation rgbAllocation = Allocation.createTyped(rs, rgbType);
 
         ScriptIntrinsicYuvToRGB yuvToRgbScript = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
         yuvToRgbScript.setInput(yuvAllocation);
         yuvToRgbScript.forEach(rgbAllocation);
 
-        byte[] rgbArray = new byte[nv21Image.width * nv21Image.height * 4];
-        rgbAllocation.copyTo(rgbArray);
-        IntBuffer intBuf =
-                ByteBuffer.wrap(rgbArray)
-                        .order(ByteOrder.LITTLE_ENDIAN)
-                        .asIntBuffer();
-        int[] array = new int[intBuf.remaining()];
-        intBuf.get(array);
+        Bitmap bitmap = Bitmap.createBitmap(nv21Image.width, nv21Image.height, Bitmap.Config.ARGB_8888);
+        rgbAllocation.copyTo(bitmap);
 
-        return Bitmap.createBitmap(array, nv21Image.width, nv21Image.height, Bitmap.Config.ARGB_8888);
+        return bitmap;
     }
 }

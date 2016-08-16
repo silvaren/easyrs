@@ -48,8 +48,7 @@ public class Nv21Image {
         return new Nv21Image(nv21ByteArray, width, height);
     }
 
-    @DebugLog
-    public static Nv21Image convertToNV21(Context context, Bitmap sampleBitmap) {
+    public static Nv21Image convertToNV21(Context context, Bitmap sampleBitmap, byte[] dstArray) {
         long startTime = System.currentTimeMillis();
         Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);
 
@@ -60,7 +59,12 @@ public class Nv21Image {
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
         channelScript.forEach_channelR(bitmapRSContext.ain, aout);
         int size = sampleBitmap.getWidth() * sampleBitmap.getHeight();
-        byte[] yByteArray = new byte[size + size / 2];
+
+        byte[] yByteArray;
+        if (dstArray == null)
+            yByteArray = new byte[size + size / 2];
+        else
+            yByteArray = dstArray;
         aout.copyTo(yByteArray);
 
         Bitmap.Config config = yuvImage.getConfig();
@@ -82,9 +86,10 @@ public class Nv21Image {
         encodeScript.set_height(yuvImage.getHeight());
         encodeScript.set_gOut(uvAllocation);
         encodeScript.forEach_root(resizedIn);
-        byte[] uvByteArray = new byte[size/2];
-        uvAllocation.copyTo(uvByteArray);
 
+        byte[] uvByteArray = new byte[size / 2];
+
+        uvAllocation.copyTo(uvByteArray);
         System.arraycopy(uvByteArray, 0, yByteArray, size, uvByteArray.length);
 
         Log.d("NV21", "Conversion to NV21: " + (System.currentTimeMillis() - startTime) + "ms");
@@ -93,5 +98,13 @@ public class Nv21Image {
 
     public static Bitmap nv21ToBitmap(Context context, byte[] yByteArray, int width, int height) {
         return YuvToRgb.yuvToRgb(context, yByteArray, width, height);
+    }
+
+    public static Bitmap nv21ToBitmap(Context context, Nv21Image nv21Image) {
+        return nv21ToBitmap(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
+    }
+
+    public static Nv21Image convertToNV21(Context context, Bitmap bitmap) {
+        return convertToNV21(context, bitmap, null);
     }
 }

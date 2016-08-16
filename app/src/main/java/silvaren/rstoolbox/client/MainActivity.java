@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 import com.google.common.base.Optional;
 
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.script_flavor_spinner)
     AppCompatSpinner flavorSpinner;
 
+    @BindView(R.id.image_format_seek)
+    SeekBar imageFormatSeekBar;
+
     private Optional<Bitmap> sampleBitmap = Optional.absent();
 
     @Override
@@ -47,20 +51,20 @@ public class MainActivity extends AppCompatActivity {
         sampleBitmap = Optional.of(loadBitmap());
 
         String selectedItem = (String) spinner.getSelectedItem();
-        processImage(selectedItem);
+        processImage(selectedItem, ImageProcesses.ImageFormat.BITMAP);
     }
 
     @OnItemSelected(R.id.script_spinner)
     public void scriptSpinnerListen() {
         String selectedItem = (String) spinner.getSelectedItem();
         updateFlavor(selectedItem);
-        processImage(selectedItem);
+        processImage(selectedItem, ImageProcesses.ImageFormat.valueOf(imageFormatSeekBar.getProgress()));
     }
 
     @OnItemSelected(R.id.script_flavor_spinner)
     public void flavorSpinnerListen() {
         String selectedItem = (String) flavorSpinner.getSelectedItem();
-        processImage(selectedItem);
+        processImage(selectedItem, ImageProcesses.ImageFormat.valueOf(imageFormatSeekBar.getProgress()));
     }
 
     private void updateFlavor(String selectedItem) {
@@ -85,13 +89,15 @@ public class MainActivity extends AppCompatActivity {
         return BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
     }
 
-    private void processImage(String selectedItem) {
+    private void processImage(String selectedItem, ImageProcesses.ImageFormat imageFormat) {
         if (!sampleBitmap.isPresent())
             sampleBitmap = Optional.of(loadBitmap());
 
         Optional<ImageProcesses.ImageProcess> imageProcess = Optional.fromNullable(
                 ImageProcesses.processMap(this).get(selectedItem));
-        if (imageProcess.isPresent())
-            imageView.setImageBitmap(imageProcess.get().processImage(this, sampleBitmap.get()));
+        if (imageProcess.isPresent()) {
+            Bitmap processedBitmap = imageProcess.get().processImage(this, sampleBitmap.get(), imageFormat);
+            imageView.setImageBitmap(processedBitmap);
+        }
     }
 }

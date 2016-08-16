@@ -16,14 +16,12 @@ public class Blend {
         baseSetup.aout.copyTo(dstBitmap);
     }
 
-    @DebugLog
-    private static byte[] doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
+    private static void doOp(Context context, byte[] nv21ByteArraySrc, int width, int height,
                                byte[] nv21ByteArrayDst, BlendOp blendOp) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArraySrc, width, height);
         Bitmap dstBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArrayDst, width, height);
         doOp(context, srcBitmap, dstBitmap, blendOp);
-        nv21ByteArrayDst = Nv21Image.convertToNV21(context, dstBitmap).nv21ByteArray;
-        return nv21ByteArrayDst;
+        Nv21Image.convertToNV21(context, dstBitmap, nv21ByteArrayDst);
     }
 
     private static class BaseSetup {
@@ -217,9 +215,9 @@ public class Blend {
     }
 
     // NV21 methods
-    public static byte[] add(Context context, byte[] nv21ByteArraySrc, int width, int height,
-                             byte[] nv21ByteArrayDst) {
-        return doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, add);
+    public static void add(Context context, byte[] nv21ByteArraySrc, int width, int height,
+                           byte[] nv21ByteArrayDst) {
+        doOp(context, nv21ByteArraySrc, width, height, nv21ByteArrayDst, add);
     }
 
     public static void clear(Context context, byte[] nv21ByteArraySrc, int width, int height,

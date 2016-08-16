@@ -3,7 +3,14 @@ package silvaren.rstoolbox.client;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.os.Environment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,14 +22,34 @@ import silvaren.rstoolbox.tools.ConvolveParams;
 import silvaren.rstoolbox.tools.Histogram;
 import silvaren.rstoolbox.tools.Lut;
 import silvaren.rstoolbox.tools.Lut3D;
+import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.Resize;
 import silvaren.rstoolbox.tools.Utils;
 
-
 class ImageProcesses {
 
+    enum ImageFormat {
+        BITMAP(0),
+        NV21(1);
+
+        private final int id;
+
+        ImageFormat(int id) {
+            this.id = id;
+        }
+
+        public static ImageFormat valueOf(int progress) {
+            ImageFormat[] values = values();
+            for (ImageFormat format : values) {
+                if (format.id == progress)
+                    return format;
+            }
+            return BITMAP;
+        }
+    }
+
     public interface ImageProcess {
-        Bitmap processImage(Context context, Bitmap bitmap);
+        Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat);
     }
 
     static Map<String, Integer> flavorMap(Context context) {
@@ -50,65 +77,73 @@ class ImageProcesses {
         return processMap;
     }
 
+    private static ImageProcess originalProcess = new ImageProcess() {
+        @Override
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+            return bitmap;
+        }
+    };
+
     private static ImageProcess blendProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 4;
             options.inDither = false;
             options.inPurgeable = true;
             Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.sample_edge, options);
-            Blend.add(context, bitmap, sampleEdgeBitmap);
-            return sampleEdgeBitmap;
-        }
-    };
-
-    private static ImageProcess originalProcess = new ImageProcess() {
-        @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
-            return bitmap;
+            if (imageFormat == ImageFormat.BITMAP) {
+                Blend.add(context, bitmap, sampleEdgeBitmap);
+                return sampleEdgeBitmap;
+            } else {
+                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image dstNv21Image = Nv21Image.convertToNV21(context, sampleEdgeBitmap);
+                Blend.add(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
+                        dstNv21Image.nv21ByteArray);
+                return Nv21Image.nv21ToBitmap(context, dstNv21Image);
+            }
         }
     };
 
     private static ImageProcess blurProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return Blur.blur(context, bitmap, 25.f);
         }
     };
 
     private static ImageProcess colorMatrixRgbtoYuvProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return ColorMatrix.rgbToYuv(context, bitmap);
         }
     };
 
     private static ImageProcess colorMatrixGraycaleProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return ColorMatrix.convertToGrayScale(context, bitmap);
         }
     };
 
     private static ImageProcess convolveSobel3x3Process = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return Convolve.convolve3x3(context, bitmap, ConvolveParams.Kernels3x3.SOBEL_X);
         }
     };
 
     private static ImageProcess convolveSobel5x5Process = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return Convolve.convolve5x5(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
         }
     };
 
     private static ImageProcess rgbaHistogramProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             int[] histograms = Histogram.rgbaHistograms(context, bitmap);
             return Utils.drawHistograms(histograms, 4);
         }
@@ -116,7 +151,7 @@ class ImageProcesses {
 
     private static ImageProcess lumHistogramProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             int[] histogram = Histogram.luminanceHistogram(context, bitmap);
             return Utils.drawHistograms(histogram, 1);
         }
@@ -124,21 +159,21 @@ class ImageProcesses {
 
     private static ImageProcess lutProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return Lut.negativeEffect(context, bitmap);
         }
     };
 
     private static ImageProcess lut3dProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return Lut3D.do3dLut(context, bitmap);
         }
     };
 
     private static ImageProcess resizeProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap) {
+        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             return Resize.resize(context, bitmap, 50, 50);
         }
     };
