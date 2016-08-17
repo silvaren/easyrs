@@ -109,7 +109,14 @@ class ImageProcesses {
     private static ImageProcess blurProcess = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
-            return Blur.blur(context, bitmap, 25.f);
+            if (imageFormat == ImageFormat.BITMAP)
+                return Blur.blur(context, bitmap, 25.f);
+            else {
+                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                byte[] output = Blur.blur(context, nv21Image.nv21ByteArray, nv21Image.width,
+                        nv21Image.height, 25.f);
+                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+            }
         }
     };
 

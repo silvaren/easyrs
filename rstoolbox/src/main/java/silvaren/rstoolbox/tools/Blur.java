@@ -2,8 +2,10 @@ package silvaren.rstoolbox.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
+import android.util.Log;
 
 import hugo.weaving.DebugLog;
 
@@ -27,16 +29,21 @@ public class Blur {
         }
     };
 
-    @DebugLog
-    public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
-        BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);
-        return blurTool.doComputation(context, inputBitmap, new BlurParams(radius));
+    @NonNull
+    private static ConvertingTool<BlurParams> createConvertingTool() {
+        BaseTool<BlurParams> baseTool = new BaseTool<>(blurToolScript);
+        return new ConvertingTool<>(baseTool);
     }
 
     @DebugLog
+    public static Bitmap blur(Context context, Bitmap inputBitmap, float radius) {
+        ConvertingTool<BlurParams> blurTool = createConvertingTool();
+        return blurTool.baseTool.doComputation(context, inputBitmap, new BlurParams(radius));
+    }
+
     public static byte[] blur(Context context, byte[] nv21ByteArray, int width, int height,
                               float radius) {
-        BaseTool<BlurParams> blurTool = new BaseTool<>(blurToolScript);
+        ConvertingTool<BlurParams> blurTool = createConvertingTool();
         return blurTool.doComputation(context, nv21ByteArray, width, height, new BlurParams(radius));
     }
 }
