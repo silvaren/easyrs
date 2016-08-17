@@ -42,7 +42,6 @@ public class ColorMatrix {
         return doColorMatrixComputation(context, inputBitmap, ColorMatrixParams.Operation.RGB_TO_YUV);
     }
 
-    @DebugLog
     public static byte[] convertToGrayScale(Context context, byte[] nv21ByteArray, int width, int height) {
         ConvertingTool<ColorMatrixParams> convertingTool = createConvertingTool();
         return convertingTool.doComputation(context, nv21ByteArray, width, height,

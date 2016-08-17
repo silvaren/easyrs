@@ -52,8 +52,7 @@ public class Convolve {
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
-    @DebugLog
-    public static byte[] convolveInPlace3x3(Context context, byte[] nv21ByteArray, int width, int height,
+    public static byte[] convolve3x3(Context context, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
         return convolveTool.doComputation(context, nv21ByteArray, width, height,
@@ -66,8 +65,7 @@ public class Convolve {
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
-    @DebugLog
-    public static byte[] convolveInPlace5x5(Context context, byte[] nv21ByteArray, int width, int height,
+    public static byte[] convolve5x5(Context context, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
         BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
         return convolveTool.doComputation(context, nv21ByteArray, width, height,
