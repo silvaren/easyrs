@@ -46,13 +46,11 @@ public class Histogram {
         return histograms;
     }
 
-    @DebugLog
     public static int[] rgbaHistograms(Context context, byte[] nv21ByteArray, int width, int height) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
         return rgbaHistograms(context, srcBitmap);
     }
 
-    @DebugLog
     public static int[] luminanceHistogram(Context context, byte[] nv21ByteArray, int width, int height) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
         return luminanceHistogram(context, srcBitmap);

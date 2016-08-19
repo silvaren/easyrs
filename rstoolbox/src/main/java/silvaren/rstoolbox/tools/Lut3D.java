@@ -10,7 +10,7 @@ import hugo.weaving.DebugLog;
 
 public class Lut3D {
 
-    private static BaseTool.BaseToolScript lut3DToolScript = new BaseTool.BaseToolScript<Lut3DParams>() {
+    private static ConvertingTool.BaseToolScript lut3DToolScript = new ConvertingTool.BaseToolScript<Lut3DParams>() {
         @Override
         public void runScript(RSToolboxContext rsToolboxContext, Allocation aout, Lut3DParams scriptParams) {
             ScriptIntrinsic3DLUT script3dLut = ScriptIntrinsic3DLUT.create(
@@ -20,22 +20,15 @@ public class Lut3D {
         }
     };
 
-    @NonNull
-    private static ConvertingTool<Lut3DParams> createConvertingTool() {
-        BaseTool<Lut3DParams> baseTool = new BaseTool<>(lut3DToolScript);
-        return new ConvertingTool<>(baseTool);
-    }
-
     @DebugLog
     public static Bitmap do3dLut(Context context, Bitmap inputBitmap) {
-        ConvertingTool<Lut3DParams> lutTool = createConvertingTool();
-        return lutTool.baseTool.doComputation(context, inputBitmap,
+        ConvertingTool<Lut3DParams> lutTool = new ConvertingTool<>(lut3DToolScript);
+        return lutTool.doComputation(context, inputBitmap,
                 new Lut3DParams());
     }
 
-    @DebugLog
     public static byte[] do3dLut(Context context, byte[] nv21ByteArray, int width, int height) {
-        ConvertingTool<Lut3DParams> lutTool = createConvertingTool();
+        ConvertingTool<Lut3DParams> lutTool = new ConvertingTool<>(lut3DToolScript);
         return lutTool.doComputation(context, nv21ByteArray, width, height,
                 new Lut3DParams());
     }

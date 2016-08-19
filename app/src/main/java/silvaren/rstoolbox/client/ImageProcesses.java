@@ -3,7 +3,15 @@ package silvaren.rstoolbox.client;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
+import android.support.v8.renderscript.Type;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -229,8 +237,8 @@ class ImageProcesses {
             else {
                 Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
                 byte[] output = Resize.resize(context, nv21Image.nv21ByteArray, nv21Image.width,
-                        nv21Image.height, 50, 50);
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                        nv21Image.height, 50,50);
+                return Nv21Image.nv21ToBitmap(context, output, 50, 50);
             }
         }
     };

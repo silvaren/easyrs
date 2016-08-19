@@ -2,6 +2,7 @@ package silvaren.rstoolbox.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve3x3;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
@@ -14,8 +15,8 @@ public class Convolve {
         void runConvolveScript(RSToolboxContext rsToolboxContext, Allocation aout, ConvolveParams scriptParams);
     }
 
-    private static BaseTool.BaseToolScript convolveToolScript(final ConvolveScript convolveScript) {
-        return new BaseTool.BaseToolScript<ConvolveParams>() {
+    private static ConvertingTool.BaseToolScript convolveToolScript(final ConvolveScript convolveScript) {
+        return new ConvertingTool.BaseToolScript<ConvolveParams>() {
             @Override
             public void runScript(RSToolboxContext rsToolboxContext, Allocation aout,
                                   ConvolveParams scriptParams) {
@@ -48,26 +49,30 @@ public class Convolve {
 
     @DebugLog
     public static Bitmap convolve3x3(Context context, Bitmap bitmap, float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
+        ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
+                convolveToolScript(convolve3x3Script));
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
     public static byte[] convolve3x3(Context context, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve3x3Script));
+        ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
+                convolveToolScript(convolve3x3Script));
         return convolveTool.doComputation(context, nv21ByteArray, width, height,
                 new ConvolveParams(coefficients));
     }
 
     @DebugLog
     public static Bitmap convolve5x5(Context context, Bitmap bitmap, float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
+        ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
+                convolveToolScript(convolve5x5Script));
         return convolveTool.doComputation(context, bitmap, new ConvolveParams(coefficients));
     }
 
     public static byte[] convolve5x5(Context context, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
-        BaseTool<ConvolveParams> convolveTool = new BaseTool<>(convolveToolScript(convolve5x5Script));
+        ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
+                convolveToolScript(convolve5x5Script));
         return convolveTool.doComputation(context, nv21ByteArray, width, height,
                 new ConvolveParams(coefficients));
     }

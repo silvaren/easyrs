@@ -22,18 +22,18 @@ class YuvToRgb {
     public static Bitmap yuvToRgb(Context context, Nv21Image nv21Image) {
         RenderScript rs = RenderScript.create(context);
 
-        Type.Builder tb = new Type.Builder(rs, Element.createPixel(rs,
-                Element.DataType.UNSIGNED_8, Element.DataKind.PIXEL_YUV));
-        tb.setX(nv21Image.width);
-        tb.setY(nv21Image.height);
-        tb.setYuvFormat(android.graphics.ImageFormat.NV21);
-        Allocation yuvAllocation = Allocation.createTyped(rs, tb.create(), Allocation.USAGE_SCRIPT);
+        Type.Builder yuvTypeBuilder = new Type.Builder(rs, Element.U8(rs))
+                .setX(nv21Image.nv21ByteArray.length);
+        Type yuvType = yuvTypeBuilder.create();
+        Allocation yuvAllocation = Allocation.createTyped(rs, yuvType, Allocation.USAGE_SCRIPT);
         yuvAllocation.copyFrom(nv21Image.nv21ByteArray);
 
-        Type rgbType = Type.createXY(rs, Element.RGBA_8888(rs), nv21Image.width, nv21Image.height);
-        Allocation rgbAllocation = Allocation.createTyped(rs, rgbType);
+        Type.Builder rgbTypeBuilder = new Type.Builder(rs, Element.RGBA_8888(rs));
+        rgbTypeBuilder.setX(nv21Image.width);
+        rgbTypeBuilder.setY(nv21Image.height);
+        Allocation rgbAllocation = Allocation.createTyped(rs, rgbTypeBuilder.create());
 
-        ScriptIntrinsicYuvToRGB yuvToRgbScript = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
+        ScriptIntrinsicYuvToRGB yuvToRgbScript = ScriptIntrinsicYuvToRGB.create(rs, Element.RGBA_8888(rs));
         yuvToRgbScript.setInput(yuvAllocation);
         yuvToRgbScript.forEach(rgbAllocation);
 
