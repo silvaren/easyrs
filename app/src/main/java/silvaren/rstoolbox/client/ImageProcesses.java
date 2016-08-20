@@ -3,15 +3,7 @@ package silvaren.rstoolbox.client;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
-import android.support.v8.renderscript.Type;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
