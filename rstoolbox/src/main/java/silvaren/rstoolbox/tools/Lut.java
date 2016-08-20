@@ -24,13 +24,28 @@ public class Lut {
     public static Bitmap negativeEffect(Context context, Bitmap inputBitmap) {
         ConvertingTool<LutParams> lutTool = new ConvertingTool<>(lutToolScript);
         return lutTool.doComputation(context, inputBitmap,
-                new LutParams(LutParams.Operation.NEGATIVE));
+                new LutParams(LutParams.negative()));
     }
 
-    public static byte[] negativeEffect(Context context, byte[] nv21ByteArray, int width, int height) {
+    @DebugLog
+    public static Bitmap applyLut(Context context, Bitmap inputBitmap, LutParams.RGBALut rgbaLut) {
+        ConvertingTool<LutParams> lutTool = new ConvertingTool<>(lutToolScript);
+        return lutTool.doComputation(context, inputBitmap,
+                new LutParams(rgbaLut));
+    }
+
+    public static byte[] negativeEffect(Context context, byte[] nv21ByteArray, int width,
+                                        int height) {
         ConvertingTool<LutParams> lutTool = new ConvertingTool<>(lutToolScript);
         return lutTool.doComputation(context, nv21ByteArray, width, height,
-                new LutParams(LutParams.Operation.NEGATIVE));
+                new LutParams(LutParams.negative()));
+    }
+
+    public static byte[] applyLut(Context context, byte[] nv21ByteArray, int width,
+                                        int height, LutParams.RGBALut rgbaLut) {
+        ConvertingTool<LutParams> lutTool = new ConvertingTool<>(lutToolScript);
+        return lutTool.doComputation(context, nv21ByteArray, width, height,
+                new LutParams(rgbaLut));
     }
 
 }
