@@ -12,12 +12,13 @@ import hugo.weaving.DebugLog;
 public class Resize {
 
     @DebugLog
-    public static Bitmap resize(Context context, Bitmap inputBitmap, int width, int height) {
+    public static Bitmap resize(Context context, Bitmap inputBitmap, int targetWidth,
+                                int targetHeight) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
         Bitmap.Config config = inputBitmap.getConfig();
-        Bitmap outputBitmap = Bitmap.createBitmap(width, height, config);
-        Type outType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(), width,
-                height);
+        Bitmap outputBitmap = Bitmap.createBitmap(targetWidth, targetHeight, config);
+        Type outType = Type.createXY(bitmapRSContext.rs, bitmapRSContext.ain.getElement(), targetWidth,
+                targetHeight);
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
 
         ScriptIntrinsicResize resizeScript = ScriptIntrinsicResize.create(bitmapRSContext.rs);
