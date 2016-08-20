@@ -2,7 +2,6 @@ package silvaren.rstoolbox.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.ScriptIntrinsic3DLUT;
 
@@ -21,16 +20,17 @@ public class Lut3D {
     };
 
     @DebugLog
-    public static Bitmap do3dLut(Context context, Bitmap inputBitmap) {
+    public static Bitmap do3dLut(Context context, Bitmap inputBitmap, Lut3DParams.Cube cube) {
         ConvertingTool<Lut3DParams> lutTool = new ConvertingTool<>(lut3DToolScript);
         return lutTool.doComputation(context, inputBitmap,
-                new Lut3DParams());
+                new Lut3DParams(cube));
     }
 
-    public static byte[] do3dLut(Context context, byte[] nv21ByteArray, int width, int height) {
+    public static byte[] do3dLut(Context context, byte[] nv21ByteArray, int width, int height,
+                                 Lut3DParams.Cube cube) {
         ConvertingTool<Lut3DParams> lutTool = new ConvertingTool<>(lut3DToolScript);
         return lutTool.doComputation(context, nv21ByteArray, width, height,
-                new Lut3DParams());
+                new Lut3DParams(cube));
     }
 
 }

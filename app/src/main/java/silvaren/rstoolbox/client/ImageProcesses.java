@@ -15,6 +15,7 @@ import silvaren.rstoolbox.tools.ConvolveParams;
 import silvaren.rstoolbox.tools.Histogram;
 import silvaren.rstoolbox.tools.Lut;
 import silvaren.rstoolbox.tools.Lut3D;
+import silvaren.rstoolbox.tools.Lut3DParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.Resize;
 import silvaren.rstoolbox.tools.Utils;
@@ -211,11 +212,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut3D.do3dLut(context, bitmap);
+                return Lut3D.do3dLut(context, bitmap, Lut3DParams.nopCube());
             else {
                 Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
                 byte[] output = Lut3D.do3dLut(context, nv21Image.nv21ByteArray, nv21Image.width,
-                        nv21Image.height);
+                        nv21Image.height, Lut3DParams.nopCube());
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
             }
         }

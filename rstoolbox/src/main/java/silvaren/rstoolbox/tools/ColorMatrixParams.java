@@ -7,7 +7,7 @@ import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 
 import com.google.common.base.Optional;
 
-class ColorMatrixParams {
+public class ColorMatrixParams {
 
     interface MatrixSetter {
         void setParams(ScriptIntrinsicColorMatrix scriptIntrinsicColorMatrix);

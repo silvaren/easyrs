@@ -2,17 +2,19 @@ package silvaren.rstoolbox.tools;
 
 import android.support.v8.renderscript.ScriptIntrinsicLUT;
 
-class LutParams {
+public class LutParams {
+
+    public static final int LUT_SIZE = 256;
 
     public static final RGBALut negative() {
-        int[] rLut = new int[256];
-        int[] gLut = new int[256];
-        int[] bLut = new int[256];
-        int[] aLut = new int[256];
-        for (int i = 0; i < 256; i++) {
-            rLut[i] = 255 - i;
-            gLut[i] = 255 - i;
-            bLut[i] = 255 - i;
+        int[] rLut = new int[LUT_SIZE];
+        int[] gLut = new int[LUT_SIZE];
+        int[] bLut = new int[LUT_SIZE];
+        int[] aLut = new int[LUT_SIZE];
+        for (int i = 0; i < LUT_SIZE; i++) {
+            rLut[i] = LUT_SIZE - 1 - i;
+            gLut[i] = LUT_SIZE - 1 - i;
+            bLut[i] = LUT_SIZE - 1 - i;
             aLut[i] = i;
         }
         return new RGBALut(rLut, gLut, bLut, aLut);
@@ -26,7 +28,7 @@ class LutParams {
 
 
     public void setLutParams(ScriptIntrinsicLUT lutScript) {
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < LUT_SIZE; i++) {
             lutScript.setAlpha(i, rgbaLut.aLut[i]);
             lutScript.setRed(i, rgbaLut.rLut[i]);
             lutScript.setGreen(i, rgbaLut.gLut[i]);
