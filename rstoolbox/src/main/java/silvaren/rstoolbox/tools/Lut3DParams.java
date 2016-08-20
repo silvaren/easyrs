@@ -8,18 +8,18 @@ import android.support.v8.renderscript.Type;
 
 public class Lut3DParams {
 
-    public static final Cube nopCube() {
+    public static final Cube swapRedAndBlueCube() {
         final int sx = 32;
         final int sy = 32;
-        final int sz = 16;
+        final int sz = 32;
         int dat[] = new int[sx * sy * sz];
         for (int z = 0; z < sz; z++) {
             for (int y = 0; y < sy; y++) {
                 for (int x = 0; x < sx; x++ ) {
                     int v = 0xff000000;
-                    v |= (0xff * x / (sx - 1));
+                    v |= (0xff * z / (sx - 1));
                     v |= (0xff * y / (sy - 1)) << 8;
-                    v |= (0xff * z / (sz - 1)) << 16;
+                    v |= (0xff * x / (sz - 1)) << 16;
                     dat[z*sy*sx + y*sx + x] = v;
                 }
             }

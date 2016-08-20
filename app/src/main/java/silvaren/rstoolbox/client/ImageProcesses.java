@@ -212,11 +212,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut3D.do3dLut(context, bitmap, Lut3DParams.nopCube());
+                return Lut3D.do3dLut(context, bitmap, Lut3DParams.swapRedAndBlueCube());
             else {
                 Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
                 byte[] output = Lut3D.do3dLut(context, nv21Image.nv21ByteArray, nv21Image.width,
-                        nv21Image.height, Lut3DParams.nopCube());
+                        nv21Image.height, Lut3DParams.swapRedAndBlueCube());
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
             }
         }
