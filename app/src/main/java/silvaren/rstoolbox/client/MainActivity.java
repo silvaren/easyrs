@@ -21,7 +21,7 @@ import butterknife.OnItemSelected;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.script_spinner)
-    AppCompatSpinner spinner;
+    AppCompatSpinner scriptSpinner;
 
     @BindView(R.id.imageView)
     ImageView imageView;
@@ -34,6 +34,23 @@ public class MainActivity extends AppCompatActivity {
 
     private Optional<Bitmap> sampleBitmap = Optional.absent();
 
+    private SeekBar.OnSeekBarChangeListener onImageFormatSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            processImageWithSelectedOptions();
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.tools_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        scriptSpinner.setAdapter(adapter);
+
+        imageFormatSeekBar.setOnSeekBarChangeListener(onImageFormatSeekBarListener);
     }
 
     @Override
@@ -50,21 +69,25 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         sampleBitmap = Optional.of(loadBitmap());
 
-        String selectedItem = (String) spinner.getSelectedItem();
+        String selectedItem = (String) scriptSpinner.getSelectedItem();
         processImage(selectedItem, ImageProcesses.ImageFormat.BITMAP);
     }
 
     @OnItemSelected(R.id.script_spinner)
     public void scriptSpinnerListen() {
-        String selectedItem = (String) spinner.getSelectedItem();
-        updateFlavor(selectedItem);
-        processImage(selectedItem, ImageProcesses.ImageFormat.valueOf(imageFormatSeekBar.getProgress()));
+        processImageWithSelectedOptions();
     }
 
     @OnItemSelected(R.id.script_flavor_spinner)
     public void flavorSpinnerListen() {
-        String selectedItem = (String) flavorSpinner.getSelectedItem();
-        processImage(selectedItem, ImageProcesses.ImageFormat.valueOf(imageFormatSeekBar.getProgress()));
+        processImageWithSelectedOptions();
+    }
+
+    private void processImageWithSelectedOptions() {
+        String selectedItem = (String) scriptSpinner.getSelectedItem();
+        updateFlavor(selectedItem);
+        processImage(selectedItem,
+                ImageProcesses.ImageFormat.valueOf(imageFormatSeekBar.getProgress()));
     }
 
     private void updateFlavor(String selectedItem) {

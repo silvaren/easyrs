@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.Float4;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.util.Log;
@@ -44,7 +45,8 @@ public class Nv21Image {
 
     public static Nv21Image bitmapToNV21(Context context, Bitmap sampleBitmap, byte[] dstArray) {
         long startTime = System.currentTimeMillis();
-        Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);
+        Bitmap yuvImage = ColorMatrix.applyMatrix(context, sampleBitmap,
+                ColorMatrixParams.rgbToNv21Matrix(), new Float4(0.0f, 0.5f, 0.5f, 0.0f));
 
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, yuvImage);
         ScriptC_channel channelScript = new ScriptC_channel(bitmapRSContext.rs);
@@ -85,6 +87,7 @@ public class Nv21Image {
 
         uvAllocation.copyTo(uvByteArray);
         System.arraycopy(uvByteArray, 0, yByteArray, size, uvByteArray.length);
+//        Arrays.fill(yByteArray, size, yByteArray.length, (byte) 127);
 
         Log.d("NV21", "Conversion to NV21: " + (System.currentTimeMillis() - startTime) + "ms");
         return new Nv21Image(yByteArray, yuvImage.getWidth(), yuvImage.getHeight());

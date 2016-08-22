@@ -28,6 +28,18 @@ public class ColorMatrixParams {
         }
     });
 
+    public static final Matrix3f rgbToNv21Matrix() {
+        float uRangeFix = 1.14678899082569f;
+        float vRangeFix = 0.8130081300813f;
+        float[] rgbToYuvCoefs = {
+                0.299f,0.587f, 0.114f,
+                -0.14713f * uRangeFix, -0.28886f * uRangeFix, 0.436f * uRangeFix,
+                0.615f * vRangeFix, -0.51499f * vRangeFix, -0.10001f * vRangeFix};
+        Matrix3f matrix3f = new Matrix3f(rgbToYuvCoefs);
+        matrix3f.transpose();
+        return matrix3f;
+    }
+
     public static final ColorMatrixParams createWithMatrix(final Matrix3f matrix3f,
                                                            final Optional<Float4> addCoefficients) {
         return new ColorMatrixParams(new MatrixSetter() {
