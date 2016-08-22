@@ -91,8 +91,8 @@ class ImageProcesses {
                 Blend.add(context, bitmap, sampleEdgeBitmap);
                 return sampleEdgeBitmap;
             } else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
-                Nv21Image dstNv21Image = Nv21Image.convertToNV21(context, sampleEdgeBitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
+                Nv21Image dstNv21Image = Nv21Image.bitmapToNV21(context, sampleEdgeBitmap);
                 Blend.add(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
                         dstNv21Image.nv21ByteArray);
                 return Nv21Image.nv21ToBitmap(context, dstNv21Image);
@@ -106,7 +106,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return Blur.blur(context, bitmap, 25.f);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = Blur.blur(context, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, 25.f);
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
@@ -127,7 +127,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return ColorMatrix.convertToGrayScale(context, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = ColorMatrix.convertToGrayScale(context, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
@@ -141,7 +141,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return Convolve.convolve3x3(context, bitmap, ConvolveParams.Kernels3x3.SOBEL_X);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = Convolve.convolve3x3(context, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height, ConvolveParams.Kernels3x3.SOBEL_X);
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
@@ -156,7 +156,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return Convolve.convolve5x5(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = Convolve.convolve5x5(context, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height, ConvolveParams.Kernels5x5.SOBEL_X);
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
@@ -171,7 +171,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 histograms = Histogram.rgbaHistograms(context, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 histograms = Histogram.rgbaHistograms(context, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
             }
@@ -186,7 +186,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 histograms = Histogram.luminanceHistogram(context, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 histograms = Histogram.luminanceHistogram(context, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
             }
@@ -200,7 +200,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return Lut.negativeEffect(context, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = Lut.negativeEffect(context, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
@@ -214,7 +214,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return Lut3D.do3dLut(context, bitmap, Lut3DParams.swapRedAndBlueCube());
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = Lut3D.do3dLut(context, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, Lut3DParams.swapRedAndBlueCube());
                 return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
@@ -228,7 +228,7 @@ class ImageProcesses {
             if (imageFormat == ImageFormat.BITMAP)
                 return Resize.resize(context, bitmap, 50, 50);
             else {
-                Nv21Image nv21Image = Nv21Image.convertToNV21(context, bitmap);
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
                 byte[] output = Resize.resize(context, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, 50,50);
                 return Nv21Image.nv21ToBitmap(context, output, 50, 50);

@@ -3,7 +3,6 @@ package silvaren.rstoolbox.tools;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 
@@ -33,6 +32,6 @@ public class Resize {
                                 int targetWidth, int targetHeight) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
         Bitmap resizedBitmap = resize(context, srcBitmap, targetWidth, targetHeight);
-        return Nv21Image.convertToNV21(context, resizedBitmap).nv21ByteArray;
+        return Nv21Image.bitmapToNV21(context, resizedBitmap).nv21ByteArray;
     }
 }

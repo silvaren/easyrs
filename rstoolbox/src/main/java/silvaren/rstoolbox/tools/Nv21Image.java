@@ -2,20 +2,14 @@ package silvaren.rstoolbox.tools;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import hugo.weaving.DebugLog;
 import silvaren.rstoolbox.scripts.ScriptC_channel;
 import silvaren.rstoolbox.scripts.ScriptC_uvencode;
 
@@ -48,7 +42,7 @@ public class Nv21Image {
         return new Nv21Image(nv21ByteArray, width, height);
     }
 
-    public static Nv21Image convertToNV21(Context context, Bitmap sampleBitmap, byte[] dstArray) {
+    public static Nv21Image bitmapToNV21(Context context, Bitmap sampleBitmap, byte[] dstArray) {
         long startTime = System.currentTimeMillis();
         Bitmap yuvImage = ColorMatrix.rgbToYuv(context, sampleBitmap);
 
@@ -104,7 +98,7 @@ public class Nv21Image {
         return nv21ToBitmap(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
     }
 
-    public static Nv21Image convertToNV21(Context context, Bitmap bitmap) {
-        return convertToNV21(context, bitmap, null);
+    public static Nv21Image bitmapToNV21(Context context, Bitmap bitmap) {
+        return bitmapToNV21(context, bitmap, null);
     }
 }

@@ -21,7 +21,7 @@ public class Blend {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArraySrc, width, height);
         Bitmap dstBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArrayDst, width, height);
         doOp(context, srcBitmap, dstBitmap, blendOp);
-        Nv21Image.convertToNV21(context, dstBitmap, nv21ByteArrayDst);
+        Nv21Image.bitmapToNV21(context, dstBitmap, nv21ByteArrayDst);
     }
 
     private static class BaseSetup {

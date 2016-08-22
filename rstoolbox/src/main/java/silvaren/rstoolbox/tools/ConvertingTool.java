@@ -47,7 +47,7 @@ public class ConvertingTool<T> {
                                    byte[] outputNv21ByteArray, T scriptParams) {
         Bitmap bitmapFromNv21 = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
         Bitmap outputBitmap = doComputation(context, bitmapFromNv21, scriptParams);
-        Nv21Image nv21Output = Nv21Image.convertToNV21(context, outputBitmap);
+        Nv21Image nv21Output = Nv21Image.bitmapToNV21(context, outputBitmap);
         System.arraycopy(nv21Output.nv21ByteArray, 0, outputNv21ByteArray, 0,
                 nv21Output.nv21ByteArray.length);
     }
