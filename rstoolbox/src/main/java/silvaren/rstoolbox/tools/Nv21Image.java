@@ -97,10 +97,6 @@ public class Nv21Image {
         return YuvToRgb.yuvToRgb(context, yByteArray, width, height);
     }
 
-    public static Bitmap nv21ToBitmap(Context context, Nv21Image nv21Image) {
-        return nv21ToBitmap(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
-    }
-
     public static Nv21Image bitmapToNV21(Context context, Bitmap bitmap) {
         return bitmapToNV21(context, bitmap, null);
     }

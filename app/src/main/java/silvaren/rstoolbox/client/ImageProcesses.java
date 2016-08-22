@@ -74,7 +74,13 @@ class ImageProcesses {
     private static ImageProcess originalProcess = new ImageProcess() {
         @Override
         public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
-            return bitmap;
+            if (imageFormat == ImageFormat.BITMAP)
+                return bitmap;
+            else {
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
+                return Nv21Image.nv21ToBitmap(context, nv21Image.nv21ByteArray,
+                        nv21Image.width, nv21Image.height);
+            }
         }
     };
 
@@ -95,7 +101,8 @@ class ImageProcesses {
                 Nv21Image dstNv21Image = Nv21Image.bitmapToNV21(context, sampleEdgeBitmap);
                 Blend.add(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
                         dstNv21Image.nv21ByteArray);
-                return Nv21Image.nv21ToBitmap(context, dstNv21Image);
+                return Nv21Image.nv21ToBitmap(context, dstNv21Image.nv21ByteArray,
+                        dstNv21Image.width, nv21Image.height);
             }
         }
     };
