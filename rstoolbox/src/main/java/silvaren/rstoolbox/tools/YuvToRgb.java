@@ -10,6 +10,7 @@ import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.v8.renderscript.Type;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -24,11 +25,29 @@ public class YuvToRgb {
     }
 
     public static Bitmap yuvToRgb(Context context, Nv21Image nv21Image) {
-        YuvImage yuvImage = new YuvImage(nv21Image.nv21ByteArray, android.graphics.ImageFormat.NV21,
-                nv21Image.width, nv21Image.height, null);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        yuvImage.compressToJpeg(new Rect(0, 0, nv21Image.width, nv21Image.height), 100, os);
-        byte[] jpegByteArray = os.toByteArray();
-        return BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
+        long startTime = System.currentTimeMillis();
+        
+        RenderScript rs = RenderScript.create(context);
+
+        Type.Builder yuvTypeBuilder = new Type.Builder(rs, Element.U8(rs))
+                .setX(nv21Image.nv21ByteArray.length);
+        Type yuvType = yuvTypeBuilder.create();
+        Allocation yuvAllocation = Allocation.createTyped(rs, yuvType, Allocation.USAGE_SCRIPT);
+        yuvAllocation.copyFrom(nv21Image.nv21ByteArray);
+
+        Type.Builder rgbTypeBuilder = new Type.Builder(rs, Element.RGBA_8888(rs));
+        rgbTypeBuilder.setX(nv21Image.width);
+        rgbTypeBuilder.setY(nv21Image.height);
+        Allocation rgbAllocation = Allocation.createTyped(rs, rgbTypeBuilder.create());
+
+        ScriptIntrinsicYuvToRGB yuvToRgbScript = ScriptIntrinsicYuvToRGB.create(rs, Element.RGBA_8888(rs));
+        yuvToRgbScript.setInput(yuvAllocation);
+        yuvToRgbScript.forEach(rgbAllocation);
+
+        Bitmap bitmap = Bitmap.createBitmap(nv21Image.width, nv21Image.height, Bitmap.Config.ARGB_8888);
+        rgbAllocation.copyTo(bitmap);
+
+        Log.d("NV21", "Conversion to Bitmap: " + (System.currentTimeMillis() - startTime) + "ms");
+        return bitmap;
     }
 }
