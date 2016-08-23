@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v8.renderscript.RenderScript;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -39,7 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar.OnSeekBarChangeListener onImageFormatSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            processImageWithSelectedOptions();
+            String selectedScript = (String) scriptSpinner.getSelectedItem();
+            String selection = selectedScript;
+
+            if (hasScriptFlavors(selectedScript))
+                selection = (String) flavorSpinner.getSelectedItem();
+
+            processImageWithSelectedOptions(selection);
         }
 
         @Override
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private RenderScript renderScript;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,17 +86,22 @@ public class MainActivity extends AppCompatActivity {
 
     @OnItemSelected(R.id.script_spinner)
     public void scriptSpinnerListen() {
-        processImageWithSelectedOptions();
+        String selectedItem = (String) scriptSpinner.getSelectedItem();
+        updateFlavor((String) scriptSpinner.getSelectedItem());
+        if (!hasScriptFlavors(selectedItem))
+            processImageWithSelectedOptions(selectedItem);
     }
 
     @OnItemSelected(R.id.script_flavor_spinner)
     public void flavorSpinnerListen() {
-        processImageWithSelectedOptions();
+        processImageWithSelectedOptions((String) flavorSpinner.getSelectedItem());
     }
 
-    private void processImageWithSelectedOptions() {
-        String selectedItem = (String) scriptSpinner.getSelectedItem();
-        updateFlavor(selectedItem);
+    private boolean hasScriptFlavors(String selectedItem) {
+        return ImageProcesses.flavorMap(this).get(selectedItem) != null;
+    }
+
+    private void processImageWithSelectedOptions(String selectedItem) {
         processImage(selectedItem,
                 ImageProcesses.ImageFormat.valueOf(imageFormatSeekBar.getProgress()));
     }
@@ -127,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 protected Bitmap doInBackground(Void... params) {
-                    Bitmap processedBitmap = imageProcess.get().processImage(MainActivity.this,
+                    Bitmap processedBitmap = imageProcess.get().processImage(getRenderScript(),
                             sampleBitmap.get(), imageFormat);
                     return processedBitmap;
                 }
@@ -139,5 +153,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }.execute();
         }
+    }
+
+    private RenderScript getRenderScript() {
+        if (this.renderScript == null) {
+            this.renderScript = RenderScript.create(this);
+        }
+        return this.renderScript;
     }
 }

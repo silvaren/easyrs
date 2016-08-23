@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.Float4;
+import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.util.Log;
@@ -43,12 +44,12 @@ public class Nv21Image {
         return new Nv21Image(nv21ByteArray, width, height);
     }
 
-    public static Nv21Image bitmapToNV21(Context context, Bitmap sampleBitmap, byte[] dstArray) {
+    public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap sampleBitmap, byte[] dstArray) {
         long startTime = System.currentTimeMillis();
-        Bitmap yuvImage = ColorMatrix.applyMatrix(context, sampleBitmap,
+        Bitmap yuvImage = ColorMatrix.applyMatrix(rs, sampleBitmap,
                 ColorMatrixParams.rgbToNv21Matrix(), new Float4(0.0f, 0.5f, 0.5f, 0.0f));
 
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, yuvImage);
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, yuvImage);
         ScriptC_channel channelScript = new ScriptC_channel(bitmapRSContext.rs);
         Type outType = Type.createXY(bitmapRSContext.rs, Element.U8(bitmapRSContext.rs),
                 yuvImage.getWidth(), yuvImage.getHeight());
@@ -93,11 +94,11 @@ public class Nv21Image {
         return new Nv21Image(yByteArray, yuvImage.getWidth(), yuvImage.getHeight());
     }
 
-    public static Bitmap nv21ToBitmap(Context context, byte[] yByteArray, int width, int height) {
-        return YuvToRgb.yuvToRgb(context, yByteArray, width, height);
+    public static Bitmap nv21ToBitmap(RenderScript rs, byte[] yByteArray, int width, int height) {
+        return YuvToRgb.yuvToRgb(rs, yByteArray, width, height);
     }
 
-    public static Nv21Image bitmapToNV21(Context context, Bitmap bitmap) {
-        return bitmapToNV21(context, bitmap, null);
+    public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap bitmap) {
+        return bitmapToNV21(rs, bitmap, null);
     }
 }

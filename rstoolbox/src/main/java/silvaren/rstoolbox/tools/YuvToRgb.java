@@ -1,10 +1,6 @@
 package silvaren.rstoolbox.tools;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
@@ -12,22 +8,13 @@ import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.v8.renderscript.Type;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-
-import hugo.weaving.DebugLog;
-
 public class YuvToRgb {
-    public static Bitmap yuvToRgb(Context context, byte[] nv21ByteArray, int width, int height) {
-        return yuvToRgb(context, new Nv21Image(nv21ByteArray, width, height));
+    public static Bitmap yuvToRgb(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
+        return yuvToRgb(rs, new Nv21Image(nv21ByteArray, width, height));
     }
 
-    public static Bitmap yuvToRgb(Context context, Nv21Image nv21Image) {
+    public static Bitmap yuvToRgb(RenderScript rs, Nv21Image nv21Image) {
         long startTime = System.currentTimeMillis();
-
-        RenderScript rs = RenderScript.create(context);
 
         Type.Builder yuvTypeBuilder = new Type.Builder(rs, Element.U8(rs))
                 .setX(nv21Image.nv21ByteArray.length);

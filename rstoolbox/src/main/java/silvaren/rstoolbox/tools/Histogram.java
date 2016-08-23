@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicHistogram;
 
 import hugo.weaving.DebugLog;
@@ -12,8 +13,8 @@ import hugo.weaving.DebugLog;
 public class Histogram {
 
     @DebugLog
-    public static int[] luminanceHistogram(Context context, Bitmap inputBitmap) {
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
+    public static int[] luminanceHistogram(RenderScript rs, Bitmap inputBitmap) {
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32(bitmapRSContext.rs),
                 Constants.COLOR_DEPTH);
 
@@ -29,8 +30,8 @@ public class Histogram {
     }
 
     @DebugLog
-    public static int[] rgbaHistograms(Context context, Bitmap inputBitmap) {
-        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(context, inputBitmap);
+    public static int[] rgbaHistograms(RenderScript rs, Bitmap inputBitmap) {
+        RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32_4(bitmapRSContext.rs),
                 Constants.COLOR_DEPTH);
 
@@ -46,13 +47,13 @@ public class Histogram {
         return histograms;
     }
 
-    public static int[] rgbaHistograms(Context context, byte[] nv21ByteArray, int width, int height) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
-        return rgbaHistograms(context, srcBitmap);
+    public static int[] rgbaHistograms(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height);
+        return rgbaHistograms(rs, srcBitmap);
     }
 
-    public static int[] luminanceHistogram(Context context, byte[] nv21ByteArray, int width, int height) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(context, nv21ByteArray, width, height);
-        return luminanceHistogram(context, srcBitmap);
+    public static int[] luminanceHistogram(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height);
+        return luminanceHistogram(rs, srcBitmap);
     }
 }

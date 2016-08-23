@@ -3,6 +3,7 @@ package silvaren.rstoolbox.client;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v8.renderscript.RenderScript;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ class ImageProcesses {
     }
 
     public interface ImageProcess {
-        Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat);
+        Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat);
     }
 
     static Map<String, Integer> flavorMap(Context context) {
@@ -57,7 +58,7 @@ class ImageProcesses {
     static Map<String, ImageProcess> processMap(Context context) {
         HashMap<String, ImageProcess> processMap = new HashMap<>();
         processMap.put(context.getString(R.string.original), originalProcess);
-        processMap.put(context.getString(R.string.blend), blendProcess);
+        processMap.put(context.getString(R.string.blend), blendProcess(context));
         processMap.put(context.getString(R.string.blur), blurProcess);
         processMap.put(context.getString(R.string.grayscale), colorMatrixGraycaleProcess);
         processMap.put(context.getString(R.string.rgbtoyuv), colorMatrixRgbtoYuvProcess);
@@ -73,85 +74,87 @@ class ImageProcesses {
 
     private static ImageProcess originalProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
                 return bitmap;
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                return Nv21Image.nv21ToBitmap(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                return Nv21Image.nv21ToBitmap(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
             }
         }
     };
 
-    private static ImageProcess blendProcess = new ImageProcess() {
-        @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 4;
-            options.inDither = false;
-            options.inPurgeable = true;
-            Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.sample_edge, options);
-            if (imageFormat == ImageFormat.BITMAP) {
-                Blend.add(context, bitmap, sampleEdgeBitmap);
-                return sampleEdgeBitmap;
-            } else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                Nv21Image dstNv21Image = Nv21Image.bitmapToNV21(context, sampleEdgeBitmap);
-                Blend.add(context, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-                        dstNv21Image.nv21ByteArray);
-                return Nv21Image.nv21ToBitmap(context, dstNv21Image.nv21ByteArray,
-                        dstNv21Image.width, nv21Image.height);
+    private static ImageProcess blendProcess(final Context context) {
+        return new ImageProcess() {
+            @Override
+            public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 4;
+                options.inDither = false;
+                options.inPurgeable = true;
+                Bitmap sampleEdgeBitmap = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.sample_edge, options);
+                if (imageFormat == ImageFormat.BITMAP) {
+                    Blend.add(rs, bitmap, sampleEdgeBitmap);
+                    return sampleEdgeBitmap;
+                } else {
+                    Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                    Nv21Image dstNv21Image = Nv21Image.bitmapToNV21(rs, sampleEdgeBitmap);
+                    Blend.add(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
+                            dstNv21Image.nv21ByteArray);
+                    return Nv21Image.nv21ToBitmap(rs, dstNv21Image.nv21ByteArray,
+                            dstNv21Image.width, nv21Image.height);
+                }
             }
-        }
-    };
+        };
+    }
 
     private static ImageProcess blurProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Blur.blur(context, bitmap, 25.f);
+                return Blur.blur(rs, bitmap, 25.f);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = Blur.blur(context, nv21Image.nv21ByteArray, nv21Image.width,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = Blur.blur(rs, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, 25.f);
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
     };
 
     private static ImageProcess colorMatrixRgbtoYuvProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
-            return ColorMatrix.rgbToYuv(context, bitmap);
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
+            return ColorMatrix.rgbToYuv(rs, bitmap);
         }
     };
 
     private static ImageProcess colorMatrixGraycaleProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return ColorMatrix.convertToGrayScale(context, bitmap);
+                return ColorMatrix.convertToGrayScale(rs, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = ColorMatrix.convertToGrayScale(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = ColorMatrix.convertToGrayScale(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
     };
 
     private static ImageProcess convolveSobel3x3Process = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Convolve.convolve3x3(context, bitmap, ConvolveParams.Kernels3x3.SOBEL_X);
+                return Convolve.convolve3x3(rs, bitmap, ConvolveParams.Kernels3x3.SOBEL_X);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = Convolve.convolve3x3(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = Convolve.convolve3x3(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height, ConvolveParams.Kernels3x3.SOBEL_X);
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
     };
@@ -159,27 +162,27 @@ class ImageProcesses {
 
     private static ImageProcess convolveSobel5x5Process = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Convolve.convolve5x5(context, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
+                return Convolve.convolve5x5(rs, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = Convolve.convolve5x5(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = Convolve.convolve5x5(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height, ConvolveParams.Kernels5x5.SOBEL_X);
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
     };
 
     private static ImageProcess rgbaHistogramProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             int[] histograms;
             if (imageFormat == ImageFormat.BITMAP)
-                histograms = Histogram.rgbaHistograms(context, bitmap);
+                histograms = Histogram.rgbaHistograms(rs, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                histograms = Histogram.rgbaHistograms(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                histograms = Histogram.rgbaHistograms(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
             }
             return Utils.drawHistograms(histograms, 4);
@@ -188,13 +191,13 @@ class ImageProcesses {
 
     private static ImageProcess lumHistogramProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             int[] histograms;
             if (imageFormat == ImageFormat.BITMAP)
-                histograms = Histogram.luminanceHistogram(context, bitmap);
+                histograms = Histogram.luminanceHistogram(rs, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                histograms = Histogram.luminanceHistogram(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                histograms = Histogram.luminanceHistogram(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
             }
             return Utils.drawHistograms(histograms, 1);
@@ -203,42 +206,42 @@ class ImageProcesses {
 
     private static ImageProcess lutProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut.negativeEffect(context, bitmap);
+                return Lut.negativeEffect(rs, bitmap);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = Lut.negativeEffect(context, nv21Image.nv21ByteArray,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = Lut.negativeEffect(rs, nv21Image.nv21ByteArray,
                         nv21Image.width, nv21Image.height);
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
     };
 
     private static ImageProcess lut3dProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut3D.do3dLut(context, bitmap, Lut3DParams.swapRedAndBlueCube());
+                return Lut3D.do3dLut(rs, bitmap, Lut3DParams.swapRedAndBlueCube());
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = Lut3D.do3dLut(context, nv21Image.nv21ByteArray, nv21Image.width,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = Lut3D.do3dLut(rs, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, Lut3DParams.swapRedAndBlueCube());
-                return Nv21Image.nv21ToBitmap(context, output, nv21Image.width, nv21Image.height);
+                return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
     };
 
     private static ImageProcess resizeProcess = new ImageProcess() {
         @Override
-        public Bitmap processImage(Context context, Bitmap bitmap, ImageFormat imageFormat) {
+        public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Resize.resize(context, bitmap, 50, 50);
+                return Resize.resize(rs, bitmap, 50, 50);
             else {
-                Nv21Image nv21Image = Nv21Image.bitmapToNV21(context, bitmap);
-                byte[] output = Resize.resize(context, nv21Image.nv21ByteArray, nv21Image.width,
+                Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
+                byte[] output = Resize.resize(rs, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, 50,50);
-                return Nv21Image.nv21ToBitmap(context, output, 50, 50);
+                return Nv21Image.nv21ToBitmap(rs, output, 50, 50);
             }
         }
     };
