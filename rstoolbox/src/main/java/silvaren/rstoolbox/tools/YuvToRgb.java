@@ -26,7 +26,7 @@ public class YuvToRgb {
 
     public static Bitmap yuvToRgb(Context context, Nv21Image nv21Image) {
         long startTime = System.currentTimeMillis();
-        
+
         RenderScript rs = RenderScript.create(context);
 
         Type.Builder yuvTypeBuilder = new Type.Builder(rs, Element.U8(rs))

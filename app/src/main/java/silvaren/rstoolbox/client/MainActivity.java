@@ -1,7 +1,9 @@
 package silvaren.rstoolbox.client;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
@@ -112,15 +114,30 @@ public class MainActivity extends AppCompatActivity {
         return BitmapFactory.decodeResource(getResources(), R.drawable.sample, options);
     }
 
-    private void processImage(String selectedItem, ImageProcesses.ImageFormat imageFormat) {
+    private void processImage(String selectedItem, final ImageProcesses.ImageFormat imageFormat) {
         if (!sampleBitmap.isPresent())
             sampleBitmap = Optional.of(loadBitmap());
 
-        Optional<ImageProcesses.ImageProcess> imageProcess = Optional.fromNullable(
+        final Optional<ImageProcesses.ImageProcess> imageProcess = Optional.fromNullable(
                 ImageProcesses.processMap(this).get(selectedItem));
         if (imageProcess.isPresent()) {
-            Bitmap processedBitmap = imageProcess.get().processImage(this, sampleBitmap.get(), imageFormat);
-            imageView.setImageBitmap(processedBitmap);
+            final ProgressDialog progressDialog = ProgressDialog.show(this, "Loading",
+                    "Wait while loading...");
+            new AsyncTask<Void, Void, Bitmap>() {
+
+                @Override
+                protected Bitmap doInBackground(Void... params) {
+                    Bitmap processedBitmap = imageProcess.get().processImage(MainActivity.this,
+                            sampleBitmap.get(), imageFormat);
+                    return processedBitmap;
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap processedBitmap) {
+                    imageView.setImageBitmap(processedBitmap);
+                    progressDialog.dismiss();
+                }
+            }.execute();
         }
     }
 }
