@@ -1,16 +1,14 @@
 package silvaren.rstoolbox.client;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
-import android.test.ActivityTestCase;
-import android.test.AndroidTestCase;
 import android.test.ApplicationTestCase;
 
 import junit.framework.Assert;
@@ -27,6 +25,7 @@ import silvaren.rstoolbox.tools.Nv21Image;
 @RunWith(AndroidJUnit4.class)
 public class BlurTest extends ApplicationTestCase<Application> {
 
+    public static final float RADIUS = 25.f;
     private final Context context = InstrumentationRegistry.getTargetContext();
 
     public BlurTest() {
@@ -46,20 +45,10 @@ public class BlurTest extends ApplicationTestCase<Application> {
         RenderScript rs = RenderScript.create(getApplication());
         Nv21Image nv21Image = Nv21Image.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
-        Allocation ain = Allocation.createFromBitmap(rs, bmpFromNv21);
-        Allocation aout = Allocation.createTyped(rs, ain.getType());
-
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
-                rs, ain.getElement());
-        blurScript.setInput(ain);
-        blurScript.setRadius(25.f);
-        blurScript.forEach(aout);
-
-        Bitmap expectedBitmap = Bitmap.createBitmap(bmpFromNv21.getWidth(), bmpFromNv21.getHeight(), bmpFromNv21.getConfig());
-        aout.copyTo(expectedBitmap);
+        Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
 
         // when
-        Bitmap output = Blur.blur(rs, bmpFromNv21, 25.f);
+        Bitmap output = Blur.blur(rs, bmpFromNv21, RADIUS);
 
         // then
         Assert.assertTrue(output.sameAs(expectedBitmap));
@@ -71,23 +60,29 @@ public class BlurTest extends ApplicationTestCase<Application> {
         RenderScript rs = RenderScript.create(getApplication().getApplicationContext());
         Nv21Image nv21Image = Nv21Image.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
+        Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
+        Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
+
+        // when
+        byte[] output = Blur.blur(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, RADIUS);
+
+        // then
+        Assert.assertTrue(Arrays.equals(output, expectedNv21Image.nv21ByteArray));
+    }
+
+    @NonNull
+    private Bitmap getExpectedBitmap(RenderScript rs, Bitmap bmpFromNv21) {
         Allocation ain = Allocation.createFromBitmap(rs, bmpFromNv21);
         Allocation aout = Allocation.createTyped(rs, ain.getType());
 
         ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(
                 rs, ain.getElement());
         blurScript.setInput(ain);
-        blurScript.setRadius(25.f);
+        blurScript.setRadius(RADIUS);
         blurScript.forEach(aout);
 
         Bitmap expectedBitmap = Bitmap.createBitmap(bmpFromNv21.getWidth(), bmpFromNv21.getHeight(), bmpFromNv21.getConfig());
         aout.copyTo(expectedBitmap);
-        Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
-
-        // when
-        byte[] output = Blur.blur(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, 25.f);
-
-        // then
-        Assert.assertTrue(Arrays.equals(output, expectedNv21Image.nv21ByteArray));
+        return expectedBitmap;
     }
 }
