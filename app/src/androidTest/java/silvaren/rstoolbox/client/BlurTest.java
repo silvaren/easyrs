@@ -27,6 +27,7 @@ public class BlurTest extends ApplicationTestCase<Application> {
 
     public static final float RADIUS = 25.f;
     private final Context context = InstrumentationRegistry.getTargetContext();
+    private RenderScript rs;
 
     public BlurTest() {
         super(Application.class);
@@ -37,12 +38,12 @@ public class BlurTest extends ApplicationTestCase<Application> {
         super.setUp();
         setContext(context);
         createApplication();
+        rs = RenderScript.create(getApplication());
     }
 
     @Test
-    public void testShouldApplyBlurToBitmapInput() {
+    public void shouldApplyBlurToBitmapInput() {
         // given
-        RenderScript rs = RenderScript.create(getApplication());
         Nv21Image nv21Image = Nv21Image.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
@@ -57,7 +58,6 @@ public class BlurTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyBlurToNv21Input() {
         // given
-        RenderScript rs = RenderScript.create(getApplication().getApplicationContext());
         Nv21Image nv21Image = Nv21Image.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);

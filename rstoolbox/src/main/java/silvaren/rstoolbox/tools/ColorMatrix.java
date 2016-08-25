@@ -57,7 +57,7 @@ public class ColorMatrix {
                                       Matrix3f matrix3f, Optional<Float4> addTerms) {
         ConvertingTool<ColorMatrixParams> convertingTool = new ConvertingTool<>(colorMatrixToolScript);
         ColorMatrixParams matrixParam = ColorMatrixParams.createWithMatrix(matrix3f,
-                Optional.<Float4>absent());
+                addTerms);
         return convertingTool.doComputation(rs, nv21ByteArray, width, height, matrixParam);
     }
 
@@ -65,7 +65,7 @@ public class ColorMatrix {
                                       Matrix4f matrix4f, Optional<Float4> addTerms) {
         ConvertingTool<ColorMatrixParams> convertingTool = new ConvertingTool<>(colorMatrixToolScript);
         ColorMatrixParams matrixParam = ColorMatrixParams.createWithMatrix(matrix4f,
-                Optional.<Float4>absent());
+                addTerms);
         return convertingTool.doComputation(rs, nv21ByteArray, width, height, matrixParam);
     }
 
