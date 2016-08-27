@@ -10,10 +10,7 @@ import android.graphics.YuvImage;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicResize;
-import android.support.v8.renderscript.Type;
 import android.test.ApplicationTestCase;
 
 import junit.framework.Assert;
@@ -25,19 +22,18 @@ import org.junit.runner.RunWith;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.Nv21Image;
-import silvaren.rstoolbox.tools.Resize;
+import silvaren.rstoolbox.tools.YuvToRgb;
 import silvaren.rstoolbox.tools.base.Utils;
 
 @RunWith(AndroidJUnit4.class)
-public class Nv21ImageTest extends ApplicationTestCase<Application> {
+public class YuvToRgbTest extends ApplicationTestCase<Application> {
 
     private final Context context = InstrumentationRegistry.getTargetContext();
     private RenderScript rs;
 
-    public Nv21ImageTest() {
+    public YuvToRgbTest() {
         super(Application.class);
     }
 
@@ -56,7 +52,7 @@ public class Nv21ImageTest extends ApplicationTestCase<Application> {
         Bitmap expectedBitmap = getExpectedBitmap(nv21Image);
 
         // when
-        Bitmap output = Nv21Image.nv21ToBitmap(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
+        Bitmap output = YuvToRgb.yuvToRgb(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
 
         // then
         int[] expectedPixels = new int[nv21Image.width * nv21Image.height];

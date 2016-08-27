@@ -2,6 +2,9 @@ package silvaren.rstoolbox.tools.base;
 
 import android.graphics.Bitmap;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 import silvaren.rstoolbox.tools.Histogram;
 
 public class Utils {
@@ -46,5 +49,27 @@ public class Utils {
         }
 
         return outputBitmap;
+    }
+
+    public static double meanSquareErrorRgb8888(int[] a, int[] b) {
+        byte[] aBytes = intArrayAsByteArray(a);
+        byte[] bBytes = intArrayAsByteArray(b);
+
+        double sum_sq = 0;
+
+        for (int i = 0; i < aBytes.length; i++)
+        {
+            int err = bBytes[i] & 0xff - aBytes[i] & 0xff;
+            sum_sq += (err * err);
+        }
+        double mse = sum_sq / (aBytes.length);
+        return mse;
+    }
+
+    private static byte[] intArrayAsByteArray(int[] a) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(a.length * 4);
+        IntBuffer intBuffer = byteBuffer.asIntBuffer();
+        intBuffer.put(a);
+        return byteBuffer.array();
     }
 }
