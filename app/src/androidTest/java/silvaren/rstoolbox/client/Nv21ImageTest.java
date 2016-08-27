@@ -10,10 +10,7 @@ import android.graphics.YuvImage;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicResize;
-import android.support.v8.renderscript.Type;
 import android.test.ApplicationTestCase;
 
 import junit.framework.Assert;
@@ -23,12 +20,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.Nv21Image;
-import silvaren.rstoolbox.tools.Resize;
 import silvaren.rstoolbox.tools.base.Utils;
 
 @RunWith(AndroidJUnit4.class)
@@ -50,10 +43,10 @@ public class Nv21ImageTest extends ApplicationTestCase<Application> {
     }
 
     @Test
-    public void shouldResizeBitmapInput() {
+    public void shouldConvertNv21InputToBitmap() {
         // given
         Nv21Image nv21Image = Nv21Image.generateSample();
-        Bitmap expectedBitmap = getExpectedBitmap(nv21Image);
+        Bitmap expectedBitmap = getConvertedBitmap(nv21Image);
 
         // when
         Bitmap output = Nv21Image.nv21ToBitmap(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
@@ -66,8 +59,21 @@ public class Nv21ImageTest extends ApplicationTestCase<Application> {
         Assert.assertTrue(Math.sqrt(Utils.meanSquareErrorRgb8888(outputPixels, expectedPixels)) < 20.0);
     }
 
+    @Test
+    public void shouldConvertBitmapInputToNv21() {
+        // given
+        Nv21Image nv21Image = Nv21Image.generateSample();
+        Bitmap convertedBitmap = getConvertedBitmap(nv21Image);
+
+        // when
+        Nv21Image output = Nv21Image.bitmapToNV21(rs, convertedBitmap);
+
+        // then
+        Assert.assertTrue(Math.sqrt(Utils.meanSquareErrorFromBytes(output.nv21ByteArray, nv21Image.nv21ByteArray)) < 20.0);
+    }
+
     @NonNull
-    private Bitmap getExpectedBitmap(Nv21Image nv21Image) {
+    private Bitmap getConvertedBitmap(Nv21Image nv21Image) {
         YuvImage yuvImage = new YuvImage(nv21Image.nv21ByteArray, ImageFormat.NV21, nv21Image.width,
                 nv21Image.height, null);
         ByteArrayOutputStream os = new ByteArrayOutputStream();

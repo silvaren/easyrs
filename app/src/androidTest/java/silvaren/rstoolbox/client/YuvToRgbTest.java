@@ -46,7 +46,7 @@ public class YuvToRgbTest extends ApplicationTestCase<Application> {
     }
 
     @Test
-    public void shouldResizeBitmapInput() {
+    public void shouldConvertNv21InputToBitmap() {
         // given
         Nv21Image nv21Image = Nv21Image.generateSample();
         Bitmap expectedBitmap = getExpectedBitmap(nv21Image);

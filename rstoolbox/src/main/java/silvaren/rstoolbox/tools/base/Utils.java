@@ -55,15 +55,7 @@ public class Utils {
         byte[] aBytes = intArrayAsByteArray(a);
         byte[] bBytes = intArrayAsByteArray(b);
 
-        double sum_sq = 0;
-
-        for (int i = 0; i < aBytes.length; i++)
-        {
-            int err = bBytes[i] & 0xff - aBytes[i] & 0xff;
-            sum_sq += (err * err);
-        }
-        double mse = sum_sq / (aBytes.length);
-        return mse;
+        return meanSquareErrorFromBytes(aBytes, bBytes);
     }
 
     private static byte[] intArrayAsByteArray(int[] a) {
@@ -71,5 +63,17 @@ public class Utils {
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
         intBuffer.put(a);
         return byteBuffer.array();
+    }
+
+    public static double meanSquareErrorFromBytes(byte[] a, byte[] b) {
+        double sum_sq = 0;
+
+        for (int i = 0; i < a.length; i++)
+        {
+            int err = b[i] & 0xff - a[i] & 0xff;
+            sum_sq += (err * err);
+        }
+        double mse = sum_sq / (a.length);
+        return mse;
     }
 }
