@@ -7,10 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Float4;
-import android.support.v8.renderscript.Matrix3f;
 import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve3x3;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 import android.test.ApplicationTestCase;
@@ -23,9 +20,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import silvaren.rstoolbox.tools.ColorMatrix;
 import silvaren.rstoolbox.tools.Convolve;
-import silvaren.rstoolbox.tools.ConvolveParams;
+import silvaren.rstoolbox.tools.params.ConvolveParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 
 @RunWith(AndroidJUnit4.class)

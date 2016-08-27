@@ -12,14 +12,15 @@ import silvaren.rstoolbox.tools.Blend;
 import silvaren.rstoolbox.tools.Blur;
 import silvaren.rstoolbox.tools.ColorMatrix;
 import silvaren.rstoolbox.tools.Convolve;
-import silvaren.rstoolbox.tools.ConvolveParams;
+import silvaren.rstoolbox.tools.params.ConvolveParams;
 import silvaren.rstoolbox.tools.Histogram;
 import silvaren.rstoolbox.tools.Lut;
 import silvaren.rstoolbox.tools.Lut3D;
-import silvaren.rstoolbox.tools.Lut3DParams;
+import silvaren.rstoolbox.tools.params.Lut3DParams;
+import silvaren.rstoolbox.tools.params.LutParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.Resize;
-import silvaren.rstoolbox.tools.Utils;
+import silvaren.rstoolbox.tools.base.Utils;
 
 class ImageProcesses {
 
@@ -208,11 +209,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut.negativeEffect(rs, bitmap);
+                return Lut.applyLut(rs, bitmap, LutParams.negative());
             else {
                 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
-                byte[] output = Lut.negativeEffect(rs, nv21Image.nv21ByteArray,
-                        nv21Image.width, nv21Image.height);
+                byte[] output = Lut.applyLut(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
+                        LutParams.negative());
                 return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
@@ -222,10 +223,10 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut3D.do3dLut(rs, bitmap, Lut3DParams.swapRedAndBlueCube());
+                return Lut3D.apply3dLut(rs, bitmap, Lut3DParams.swapRedAndBlueCube());
             else {
                 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
-                byte[] output = Lut3D.do3dLut(rs, nv21Image.nv21ByteArray, nv21Image.width,
+                byte[] output = Lut3D.apply3dLut(rs, nv21Image.nv21ByteArray, nv21Image.width,
                         nv21Image.height, Lut3DParams.swapRedAndBlueCube());
                 return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }

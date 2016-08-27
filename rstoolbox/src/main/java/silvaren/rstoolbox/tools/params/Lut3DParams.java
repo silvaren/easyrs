@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.tools.params;
 
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
@@ -27,13 +27,13 @@ public class Lut3DParams {
         return new Cube(sx, sy, sz, dat);
     }
 
-    private final Cube cube;
+    public final Cube cube;
 
-    Lut3DParams(Cube cube) {
+    public Lut3DParams(Cube cube) {
         this.cube = cube;
     }
 
-    static class Cube {
+    public static class Cube {
         private final int[] cube;
         private final int xSize;
         private final int ySize;
@@ -64,25 +64,20 @@ public class Lut3DParams {
         public int[] getCube() {
             return cube;
         }
-    }
 
-    private static Allocation initCubeAllocation(RenderScript rs, Cube cube) {
-        final int sx = cube.xSize;
-        final int sy = cube.ySize;
-        final int sz = cube.zSize;
-        Type.Builder tb = new Type.Builder(rs, Element.U8_4(rs));
-        tb.setX(sx);
-        tb.setY(sy);
-        tb.setZ(sz);
-        Type t = tb.create();
-        Allocation mCube = Allocation.createTyped(rs, t);
-        mCube.copyFromUnchecked(cube.getCube());
+        public Allocation createAllocation(RenderScript rs) {
+            final int sx = xSize;
+            final int sy = ySize;
+            final int sz = zSize;
+            Type.Builder tb = new Type.Builder(rs, Element.U8_4(rs));
+            tb.setX(sx);
+            tb.setY(sy);
+            tb.setZ(sz);
+            Type t = tb.create();
+            Allocation mCube = Allocation.createTyped(rs, t);
+            mCube.copyFromUnchecked(getCube());
 
-        return mCube;
-    }
-
-
-    public void setLut(RenderScript rs, ScriptIntrinsic3DLUT script3dLut) {
-        script3dLut.setLUT(initCubeAllocation(rs, cube));
+            return mCube;
+        }
     }
 }

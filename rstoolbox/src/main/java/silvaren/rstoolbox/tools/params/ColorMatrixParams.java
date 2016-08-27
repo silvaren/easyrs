@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.tools.params;
 
 import android.support.v8.renderscript.Float4;
 import android.support.v8.renderscript.Matrix3f;

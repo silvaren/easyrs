@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.tools.params;
 
 public class ConvolveParams {
 

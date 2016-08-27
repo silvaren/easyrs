@@ -6,6 +6,7 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlend;
 
 import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.base.RSToolboxContext;
 
 public class Blend {
 

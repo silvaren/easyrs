@@ -1,9 +1,10 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.tools.base;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
+
+import silvaren.rstoolbox.tools.Nv21Image;
 
 public class ConvertingTool<T> {
 
@@ -13,11 +14,11 @@ public class ConvertingTool<T> {
         this.tool = tool;
     }
 
-    interface BaseToolScript<T> {
+    public interface BaseToolScript<T> {
         void runScript(RSToolboxContext rsToolboxrs, Allocation aout, T scriptParams);
     }
 
-    protected Bitmap doComputation(RenderScript rs, Bitmap inputBitmap, T scriptParams) {
+    public Bitmap doComputation(RenderScript rs, Bitmap inputBitmap, T scriptParams) {
         Bitmap.Config config = inputBitmap.getConfig();
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(),
                 config);
@@ -37,8 +38,8 @@ public class ConvertingTool<T> {
         return outputBitmap;
     }
 
-    protected byte[] doComputation(RenderScript rs, byte[] nv21ByteArray, int width, int height,
-                                 T scriptParams) {
+    public byte[] doComputation(RenderScript rs, byte[] nv21ByteArray, int width, int height,
+                                T scriptParams) {
         byte[] outputNv21ByteArray = new byte[nv21ByteArray.length];
         doComputation(rs, nv21ByteArray, width, height, outputNv21ByteArray, scriptParams);
         return outputNv21ByteArray;

@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.tools.params;
 
 import android.support.v8.renderscript.ScriptIntrinsicLUT;
 
@@ -22,7 +22,7 @@ public class LutParams {
 
     private final RGBALut rgbaLut;
 
-    LutParams(RGBALut rgbaLut) {
+    public LutParams(RGBALut rgbaLut) {
         this.rgbaLut = rgbaLut;
     }
 
@@ -37,10 +37,10 @@ public class LutParams {
     }
 
     public static class RGBALut {
-        private final int[] rLut;
-        private final int[] gLut;
-        private final int[] bLut;
-        private final int[] aLut;
+        public final int[] rLut;
+        public final int[] gLut;
+        public final int[] bLut;
+        public final int[] aLut;
 
         private RGBALut(int[] rLut, int[] gLut, int[] bLut, int[] aLut) {
             this.rLut = rLut;

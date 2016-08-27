@@ -1,4 +1,4 @@
-package silvaren.rstoolbox.tools;
+package silvaren.rstoolbox.tools.base;
 
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;

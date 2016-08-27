@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.ColorMatrix;
-import silvaren.rstoolbox.tools.ColorMatrixParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 
 @RunWith(AndroidJUnit4.class)

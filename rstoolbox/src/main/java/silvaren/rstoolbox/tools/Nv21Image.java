@@ -1,6 +1,5 @@
 package silvaren.rstoolbox.tools;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
@@ -14,6 +13,8 @@ import java.util.Arrays;
 
 import silvaren.rstoolbox.scripts.ScriptC_channel;
 import silvaren.rstoolbox.scripts.ScriptC_uvencode;
+import silvaren.rstoolbox.tools.base.RSToolboxContext;
+import silvaren.rstoolbox.tools.params.ColorMatrixParams;
 
 public class Nv21Image {
 

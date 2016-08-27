@@ -1,12 +1,13 @@
 package silvaren.rstoolbox.tools;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.base.ConvertingTool;
+import silvaren.rstoolbox.tools.base.RSToolboxContext;
 
 public class Blur {
 

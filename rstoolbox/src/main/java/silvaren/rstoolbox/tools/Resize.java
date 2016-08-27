@@ -1,6 +1,5 @@
 package silvaren.rstoolbox.tools;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
@@ -8,6 +7,7 @@ import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 
 import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.base.RSToolboxContext;
 
 public class Resize {
 

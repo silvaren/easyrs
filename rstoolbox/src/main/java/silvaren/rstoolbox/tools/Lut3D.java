@@ -1,12 +1,14 @@
 package silvaren.rstoolbox.tools;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsic3DLUT;
 
 import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.base.ConvertingTool;
+import silvaren.rstoolbox.tools.base.RSToolboxContext;
+import silvaren.rstoolbox.tools.params.Lut3DParams;
 
 public class Lut3D {
 
@@ -15,20 +17,20 @@ public class Lut3D {
         public void runScript(RSToolboxContext rsToolboxContext, Allocation aout, Lut3DParams scriptParams) {
             ScriptIntrinsic3DLUT script3dLut = ScriptIntrinsic3DLUT.create(
                     rsToolboxContext.rs, rsToolboxContext.ain.getElement());
-            scriptParams.setLut(rsToolboxContext.rs, script3dLut);
+            script3dLut.setLUT(scriptParams.cube.createAllocation(rsToolboxContext.rs));
             script3dLut.forEach(rsToolboxContext.ain, aout);
         }
     };
 
     @DebugLog
-    public static Bitmap do3dLut(RenderScript rs, Bitmap inputBitmap, Lut3DParams.Cube cube) {
+    public static Bitmap apply3dLut(RenderScript rs, Bitmap inputBitmap, Lut3DParams.Cube cube) {
         ConvertingTool<Lut3DParams> lutTool = new ConvertingTool<>(lut3DToolScript);
         return lutTool.doComputation(rs, inputBitmap,
                 new Lut3DParams(cube));
     }
 
-    public static byte[] do3dLut(RenderScript rs, byte[] nv21ByteArray, int width, int height,
-                                 Lut3DParams.Cube cube) {
+    public static byte[] apply3dLut(RenderScript rs, byte[] nv21ByteArray, int width, int height,
+                                    Lut3DParams.Cube cube) {
         ConvertingTool<Lut3DParams> lutTool = new ConvertingTool<>(lut3DToolScript);
         return lutTool.doComputation(rs, nv21ByteArray, width, height,
                 new Lut3DParams(cube));

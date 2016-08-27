@@ -1,6 +1,5 @@
 package silvaren.rstoolbox.tools;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Float4;
@@ -12,6 +11,9 @@ import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 import com.google.common.base.Optional;
 
 import hugo.weaving.DebugLog;
+import silvaren.rstoolbox.tools.base.ConvertingTool;
+import silvaren.rstoolbox.tools.base.RSToolboxContext;
+import silvaren.rstoolbox.tools.params.ColorMatrixParams;
 
 public class ColorMatrix {
 
