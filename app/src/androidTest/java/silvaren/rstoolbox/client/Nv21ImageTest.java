@@ -59,19 +59,6 @@ public class Nv21ImageTest extends ApplicationTestCase<Application> {
         Assert.assertTrue(Math.sqrt(Utils.meanSquareErrorRgb8888(outputPixels, expectedPixels)) < 20.0);
     }
 
-    @Test
-    public void shouldConvertBitmapInputToNv21() {
-        // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
-        Bitmap convertedBitmap = getConvertedBitmap(nv21Image);
-
-        // when
-        Nv21Image output = Nv21Image.bitmapToNV21(rs, convertedBitmap);
-
-        // then
-        Assert.assertTrue(Math.sqrt(Utils.meanSquareErrorFromBytes(output.nv21ByteArray, nv21Image.nv21ByteArray)) < 20.0);
-    }
-
     @NonNull
     private Bitmap getConvertedBitmap(Nv21Image nv21Image) {
         YuvImage yuvImage = new YuvImage(nv21Image.nv21ByteArray, ImageFormat.NV21, nv21Image.width,
