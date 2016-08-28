@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.Blend;
+import silvaren.rstoolbox.tools.Blur;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.Resize;
 
@@ -57,6 +58,23 @@ public class BlendTest extends ApplicationTestCase<Application> {
 
         // then
         Assert.assertTrue(bmpToAdd.sameAs(expectedBitmap));
+    }
+
+    @Test
+    public void shouldApplyBlurToNv21Input() {
+        // given
+        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21ImageToAdd = Nv21Image.generateSample();
+        Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
+        Bitmap bmpToAddFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21ImageToAdd);
+        Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, bmpToAddFromNv21);
+        Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
+
+        // when
+        Blend.add(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, nv21ImageToAdd.nv21ByteArray);
+
+        // then
+        Assert.assertTrue(Arrays.equals(nv21ImageToAdd.nv21ByteArray, expectedNv21Image.nv21ByteArray));
     }
 
     @NonNull
