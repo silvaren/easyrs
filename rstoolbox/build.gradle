@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 23
@@ -13,11 +14,15 @@ android {
         versionName "0.1"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled = true
         }
     }
 }
@@ -27,4 +32,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.google.guava:guava:19.0'
+    androidTestCompile ('com.android.support.test:runner:0.5') {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile ('com.android.support.test:rules:0.5') {
+        exclude module: 'support-annotations'
+    }
+    // Optional -- Hamcrest library
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
