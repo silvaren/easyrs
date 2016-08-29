@@ -21,6 +21,7 @@ import silvaren.rstoolbox.tools.params.LutParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 import silvaren.rstoolbox.tools.Resize;
 import silvaren.rstoolbox.tools.base.Utils;
+import silvaren.rstoolbox.tools.params.SampleParams;
 
 class ImageProcesses {
 
@@ -150,11 +151,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Convolve.convolve3x3(rs, bitmap, ConvolveParams.Kernels3x3.SOBEL_X);
+                return Convolve.convolve3x3(rs, bitmap, SampleParams.Convolve.Kernels3x3.SOBEL_X);
             else {
                 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
                 byte[] output = Convolve.convolve3x3(rs, nv21Image.nv21ByteArray,
-                        nv21Image.width, nv21Image.height, ConvolveParams.Kernels3x3.SOBEL_X);
+                        nv21Image.width, nv21Image.height, SampleParams.Convolve.Kernels3x3.SOBEL_X);
                 return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
@@ -165,11 +166,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Convolve.convolve5x5(rs, bitmap, ConvolveParams.Kernels5x5.SOBEL_X);
+                return Convolve.convolve5x5(rs, bitmap, SampleParams.Convolve.Kernels5x5.SOBEL_X);
             else {
                 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
                 byte[] output = Convolve.convolve5x5(rs, nv21Image.nv21ByteArray,
-                        nv21Image.width, nv21Image.height, ConvolveParams.Kernels5x5.SOBEL_X);
+                        nv21Image.width, nv21Image.height, SampleParams.Convolve.Kernels5x5.SOBEL_X);
                 return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
@@ -209,11 +210,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut.applyLut(rs, bitmap, LutParams.negative());
+                return Lut.applyLut(rs, bitmap, SampleParams.Lut.negative());
             else {
                 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
                 byte[] output = Lut.applyLut(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-                        LutParams.negative());
+                        SampleParams.Lut.negative());
                 return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }
@@ -223,11 +224,11 @@ class ImageProcesses {
         @Override
         public Bitmap processImage(RenderScript rs, Bitmap bitmap, ImageFormat imageFormat) {
             if (imageFormat == ImageFormat.BITMAP)
-                return Lut3D.apply3dLut(rs, bitmap, Lut3DParams.swapRedAndBlueCube());
+                return Lut3D.apply3dLut(rs, bitmap, SampleParams.Lut3D.swapRedAndBlueCube());
             else {
                 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, bitmap);
                 byte[] output = Lut3D.apply3dLut(rs, nv21Image.nv21ByteArray, nv21Image.width,
-                        nv21Image.height, Lut3DParams.swapRedAndBlueCube());
+                        nv21Image.height, SampleParams.Lut3D.swapRedAndBlueCube());
                 return Nv21Image.nv21ToBitmap(rs, output, nv21Image.width, nv21Image.height);
             }
         }

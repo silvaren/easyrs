@@ -9,6 +9,13 @@ import com.google.common.base.Optional;
 
 public class ColorMatrixParams {
 
+    public static final float U_RANGE_FIX = 1.14678899082569f;
+    public static final float V_RANGE_FIX = 0.8130081300813f;
+    public static final float[] RGB_TO_YUV_COEFS = new float[]{
+            0.299f, 0.587f, 0.114f,
+            -0.14713f * U_RANGE_FIX, -0.28886f * U_RANGE_FIX, 0.436f * U_RANGE_FIX,
+            0.615f * V_RANGE_FIX, -0.51499f * V_RANGE_FIX, -0.10001f * V_RANGE_FIX};
+
     interface MatrixSetter {
         void setParams(ScriptIntrinsicColorMatrix scriptIntrinsicColorMatrix);
     }
@@ -29,13 +36,7 @@ public class ColorMatrixParams {
     });
 
     public static final Matrix3f rgbToNv21Matrix() {
-        float uRangeFix = 1.14678899082569f;
-        float vRangeFix = 0.8130081300813f;
-        float[] rgbToYuvCoefs = {
-                0.299f,0.587f, 0.114f,
-                -0.14713f * uRangeFix, -0.28886f * uRangeFix, 0.436f * uRangeFix,
-                0.615f * vRangeFix, -0.51499f * vRangeFix, -0.10001f * vRangeFix};
-        Matrix3f matrix3f = new Matrix3f(rgbToYuvCoefs);
+        Matrix3f matrix3f = new Matrix3f(RGB_TO_YUV_COEFS);
         matrix3f.transpose();
         return matrix3f;
     }
