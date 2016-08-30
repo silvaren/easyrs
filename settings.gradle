@@ -1,1 +1,1 @@
-include ':app', ':rstoolbox'
+include ':app', ':easyrs'
