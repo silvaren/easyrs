@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.Lut3D;
-import silvaren.rstoolbox.tools.params.Lut3DParams;
+import silvaren.rstoolbox.tools.params.SampleParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 
 @RunWith(AndroidJUnit4.class)
@@ -49,7 +49,7 @@ public class Lut3DTest extends ApplicationTestCase<Application> {
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
 
         // when
-        Bitmap output = Lut3D.apply3dLut(rs, bmpFromNv21, Lut3DParams.swapRedAndBlueCube());
+        Bitmap output = Lut3D.apply3dLut(rs, bmpFromNv21, SampleParams.Lut3D.swapRedAndBlueCube());
 
         // then
         Assert.assertTrue(output.sameAs(expectedBitmap));
@@ -65,7 +65,7 @@ public class Lut3DTest extends ApplicationTestCase<Application> {
 
         // when
         byte[] output = Lut3D.apply3dLut(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-                Lut3DParams.swapRedAndBlueCube());
+                SampleParams.Lut3D.swapRedAndBlueCube());
 
         // then
         Assert.assertTrue(Arrays.equals(output, expectedNv21Image.nv21ByteArray));
@@ -77,7 +77,7 @@ public class Lut3DTest extends ApplicationTestCase<Application> {
         Allocation aout = Allocation.createTyped(rs, ain.getType());
 
         ScriptIntrinsic3DLUT script3dLut = ScriptIntrinsic3DLUT.create(rs, ain.getElement());
-        script3dLut.setLUT(Lut3DParams.swapRedAndBlueCube().createAllocation(rs));
+        script3dLut.setLUT(SampleParams.Lut3D.swapRedAndBlueCube().createAllocation(rs));
         script3dLut.forEach(ain, aout);
 
         Bitmap expectedBitmap = Bitmap.createBitmap(bmpFromNv21.getWidth(), bmpFromNv21.getHeight(), bmpFromNv21.getConfig());

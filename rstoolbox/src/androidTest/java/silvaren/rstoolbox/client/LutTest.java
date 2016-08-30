@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.Lut;
 import silvaren.rstoolbox.tools.params.LutParams;
+import silvaren.rstoolbox.tools.params.SampleParams;
 import silvaren.rstoolbox.tools.Nv21Image;
 
 @RunWith(AndroidJUnit4.class)
@@ -49,7 +50,7 @@ public class LutTest extends ApplicationTestCase<Application> {
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
 
         // when
-        Bitmap output = Lut.applyLut(rs, bmpFromNv21, LutParams.negative());
+        Bitmap output = Lut.applyLut(rs, bmpFromNv21, SampleParams.Lut.negative());
 
         // then
         Assert.assertTrue(output.sameAs(expectedBitmap));
@@ -64,7 +65,7 @@ public class LutTest extends ApplicationTestCase<Application> {
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
 
         // when
-        byte[] output = Lut.applyLut(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, LutParams.negative());
+        byte[] output = Lut.applyLut(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height, SampleParams.Lut.negative());
 
         // then
         Assert.assertTrue(Arrays.equals(output, expectedNv21Image.nv21ByteArray));
@@ -77,7 +78,7 @@ public class LutTest extends ApplicationTestCase<Application> {
 
         ScriptIntrinsicLUT lutScript = ScriptIntrinsicLUT.create(rs, ain.getElement());
         for (int i = 0; i < LutParams.LUT_SIZE; i++) {
-            LutParams.RGBALut rgbaLut = LutParams.negative();
+            LutParams.RGBALut rgbaLut = SampleParams.Lut.negative();
             lutScript.setAlpha(i, rgbaLut.aLut[i]);
             lutScript.setRed(i, rgbaLut.rLut[i]);
             lutScript.setGreen(i, rgbaLut.gLut[i]);

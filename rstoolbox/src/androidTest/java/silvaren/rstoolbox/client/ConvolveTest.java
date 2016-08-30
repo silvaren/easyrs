@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 
 import silvaren.rstoolbox.tools.Convolve;
-import silvaren.rstoolbox.tools.params.ConvolveParams;
 import silvaren.rstoolbox.tools.Nv21Image;
+import silvaren.rstoolbox.tools.params.SampleParams;
 
 @RunWith(AndroidJUnit4.class)
 public class ConvolveTest extends ApplicationTestCase<Application> {
@@ -50,7 +50,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
         Bitmap expectedBitmap = getExpectedBitmap3x3(rs, bmpFromNv21);
 
         // when
-        Bitmap output = Convolve.convolve3x3(rs, bmpFromNv21, ConvolveParams.Kernels3x3.SOBEL_X);
+        Bitmap output = Convolve.convolve3x3(rs, bmpFromNv21, SampleParams.Convolve.Kernels3x3.SOBEL_X);
 
         // then
         Assert.assertTrue(output.sameAs(expectedBitmap));
@@ -66,7 +66,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
 
         // when
         byte[] output = Convolve.convolve3x3(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-                ConvolveParams.Kernels3x3.SOBEL_X);
+                SampleParams.Convolve.Kernels3x3.SOBEL_X);
 
         // then
         Assert.assertTrue(Arrays.equals(output, expectedNv21Image.nv21ByteArray));
@@ -80,7 +80,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
         Bitmap expectedBitmap = getExpectedBitmap5x5(rs, bmpFromNv21);
 
         // when
-        Bitmap output = Convolve.convolve5x5(rs, bmpFromNv21, ConvolveParams.Kernels5x5.SOBEL_X);
+        Bitmap output = Convolve.convolve5x5(rs, bmpFromNv21, SampleParams.Convolve.Kernels5x5.SOBEL_X);
 
         // then
         Assert.assertTrue(output.sameAs(expectedBitmap));
@@ -96,7 +96,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
 
         // when
         byte[] output = Convolve.convolve5x5(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height,
-                ConvolveParams.Kernels5x5.SOBEL_X);
+                SampleParams.Convolve.Kernels5x5.SOBEL_X);
 
         // then
         Assert.assertTrue(Arrays.equals(output, expectedNv21Image.nv21ByteArray));
@@ -109,7 +109,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
 
         ScriptIntrinsicConvolve3x3 convolve3x3Script = ScriptIntrinsicConvolve3x3.create(rs, ain.getElement());
         convolve3x3Script.setInput(ain);
-        convolve3x3Script.setCoefficients(ConvolveParams.Kernels3x3.SOBEL_X);
+        convolve3x3Script.setCoefficients(SampleParams.Convolve.Kernels3x3.SOBEL_X);
         convolve3x3Script.forEach(aout);
 
         Bitmap expectedBitmap = Bitmap.createBitmap(bmpFromNv21.getWidth(), bmpFromNv21.getHeight(), bmpFromNv21.getConfig());
@@ -124,7 +124,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
 
         ScriptIntrinsicConvolve5x5 convolve5x5Script = ScriptIntrinsicConvolve5x5.create(rs, ain.getElement());
         convolve5x5Script.setInput(ain);
-        convolve5x5Script.setCoefficients(ConvolveParams.Kernels5x5.SOBEL_X);
+        convolve5x5Script.setCoefficients(SampleParams.Convolve.Kernels5x5.SOBEL_X);
         convolve5x5Script.forEach(aout);
 
         Bitmap expectedBitmap = Bitmap.createBitmap(bmpFromNv21.getWidth(), bmpFromNv21.getHeight(), bmpFromNv21.getConfig());
