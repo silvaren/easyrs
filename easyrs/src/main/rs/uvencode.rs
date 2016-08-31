@@ -1,5 +1,5 @@
 #pragma version(1)
-#pragma rs java_package_name(silvaren.easyrs.scripts)
+#pragma rs java_package_name(io.github.silvaren.easyrs.scripts)
 
 rs_allocation gOut;
 int width;

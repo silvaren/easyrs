@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="silvaren.easyrs.tools">
+    package="io.github.silvaren.easyrs.tools">
 
     <application
         android:allowBackup="true"
