@@ -5,12 +5,10 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlend;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 
 public class Blend {
 
-    @DebugLog
     private static void doOp(RenderScript rs, Bitmap srcBitmap, Bitmap dstBitmap, BlendOp blendOp) {
         BaseSetup baseSetup = BaseSetup.createFromBitmap(rs, srcBitmap, dstBitmap);
         blendOp.runOp(baseSetup);

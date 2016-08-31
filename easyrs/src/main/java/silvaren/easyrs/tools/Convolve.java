@@ -6,7 +6,6 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve3x3;
 import android.support.v8.renderscript.ScriptIntrinsicConvolve5x5;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.ConvertingTool;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 import silvaren.easyrs.tools.params.ConvolveParams;
@@ -49,7 +48,6 @@ public class Convolve {
         }
     };
 
-    @DebugLog
     public static Bitmap convolve3x3(RenderScript rs, Bitmap bitmap, float[] coefficients) {
         ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
                 convolveToolScript(convolve3x3Script));
@@ -64,7 +62,6 @@ public class Convolve {
                 new ConvolveParams(coefficients));
     }
 
-    @DebugLog
     public static Bitmap convolve5x5(RenderScript rs, Bitmap bitmap, float[] coefficients) {
         ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
                 convolveToolScript(convolve5x5Script));

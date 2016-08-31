@@ -6,7 +6,6 @@ import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicHistogram;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 
 
@@ -15,7 +14,6 @@ public class Histogram {
     public static final int COLOR_DEPTH = 256;
     public static final int CHANNELS = 4;
 
-    @DebugLog
     public static int[] luminanceHistogram(RenderScript rs, Bitmap inputBitmap) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32(bitmapRSContext.rs),
@@ -32,7 +30,6 @@ public class Histogram {
         return histogram;
     }
 
-    @DebugLog
     public static int[] rgbaHistograms(RenderScript rs, Bitmap inputBitmap) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32_4(bitmapRSContext.rs),

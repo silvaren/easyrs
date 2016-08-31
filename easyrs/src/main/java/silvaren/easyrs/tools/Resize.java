@@ -6,12 +6,10 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 
 public class Resize {
 
-    @DebugLog
     public static Bitmap resize(RenderScript rs, Bitmap inputBitmap, int targetWidth,
                                 int targetHeight) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);

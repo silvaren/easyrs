@@ -5,7 +5,6 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.ConvertingTool;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 
@@ -29,7 +28,6 @@ public class Blur {
         }
     };
 
-    @DebugLog
     public static Bitmap blur(RenderScript rs, Bitmap inputBitmap, float radius) {
         ConvertingTool<BlurParams> blurTool = new ConvertingTool<>(blurToolScript);
         return blurTool.doComputation(rs, inputBitmap, new BlurParams(radius));

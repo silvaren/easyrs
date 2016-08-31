@@ -5,7 +5,6 @@ import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicLUT;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.ConvertingTool;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 import silvaren.easyrs.tools.params.LutParams;
@@ -22,7 +21,6 @@ public class Lut {
         }
     };
 
-    @DebugLog
     public static Bitmap applyLut(RenderScript rs, Bitmap inputBitmap, LutParams.RGBALut rgbaLut) {
         ConvertingTool<LutParams> lutTool = new ConvertingTool<>(lutToolScript);
         return lutTool.doComputation(rs, inputBitmap,

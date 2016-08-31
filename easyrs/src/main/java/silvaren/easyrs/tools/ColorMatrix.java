@@ -10,7 +10,6 @@ import android.support.v8.renderscript.ScriptIntrinsicColorMatrix;
 
 import com.google.common.base.Optional;
 
-import hugo.weaving.DebugLog;
 import silvaren.easyrs.tools.base.ConvertingTool;
 import silvaren.easyrs.tools.base.RSToolboxContext;
 import silvaren.easyrs.tools.params.ColorMatrixParams;
@@ -33,12 +32,10 @@ public class ColorMatrix {
         return colorMatrixTool.doComputation(rs, inputBitmap, colorMatrixParams);
     }
 
-    @DebugLog
     public static Bitmap convertToGrayScale(RenderScript rs, Bitmap inputBitmap) {
         return doColorMatrixComputation(rs, inputBitmap, ColorMatrixParams.GRAYSCALE);
     }
 
-    @DebugLog
     public static Bitmap rgbToYuv(RenderScript rs, Bitmap inputBitmap) {
         return doColorMatrixComputation(rs, inputBitmap, ColorMatrixParams.RGB_TO_YUV);
     }
@@ -71,22 +68,18 @@ public class ColorMatrix {
         return convertingTool.doComputation(rs, nv21ByteArray, width, height, matrixParam);
     }
 
-    @DebugLog
     public static Bitmap applyMatrix(RenderScript rs, Bitmap inputBitmap, Matrix3f matrix3f) {
         return applyMatrix(rs, inputBitmap, matrix3f, Optional.<Float4>absent());
     }
 
-    @DebugLog
     public static Bitmap applyMatrix(RenderScript rs, Bitmap inputBitmap, Matrix4f matrix4f) {
         return applyMatrix(rs, inputBitmap, matrix4f, Optional.<Float4>absent());
     }
 
-    @DebugLog
     public static Bitmap applyMatrix(RenderScript rs, Bitmap inputBitmap, Matrix3f matrix3f, Float4 addTerms) {
         return applyMatrix(rs, inputBitmap, matrix3f, Optional.of(addTerms));
     }
 
-    @DebugLog
     public static Bitmap applyMatrix(RenderScript rs, Bitmap inputBitmap, Matrix4f matrix4f, Float4 addTerms) {
         return applyMatrix(rs, inputBitmap, matrix4f, Optional.of(addTerms));
     }
