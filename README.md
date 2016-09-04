@@ -80,7 +80,7 @@ dependencies {
 
 Make sure jcenter repository is available in your top-level or app-level build.gradle:
 ```groovy
-buildscript {
+allprojects {
     repositories {
         ...
         jcenter()
