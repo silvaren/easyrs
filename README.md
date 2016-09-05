@@ -75,7 +75,7 @@ android {
 
 dependencies {
     ...
-    compile 'io.github.silvaren:easyrs:0.5.2'
+    compile 'io.github.silvaren:easyrs:0.5.3'
 }
 ```
 
