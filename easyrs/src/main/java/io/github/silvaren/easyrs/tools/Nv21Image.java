@@ -46,9 +46,20 @@ public class Nv21Image {
         return new Nv21Image(nv21ByteArray, width, height);
     }
 
-    public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap sampleBitmap, byte[] dstArray) {
+    /**
+     * Converts an android Bitmap image to NV21 format. If the image has odd dimensions the
+     * conversion process will round down each dimension to its closest even integer.
+     */
+    public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap bitmap, byte[] dstArray) {
         long startTime = System.currentTimeMillis();
-        Bitmap yuvImage = ColorMatrix.applyMatrix(rs, sampleBitmap,
+
+        Bitmap croppedBitmap = bitmap;
+
+        if (bitmap.getWidth() % 2 > 0 || bitmap.getHeight() % 2 > 0) {
+            croppedBitmap = Bitmap.createBitmap(bitmap, 0, 0, (bitmap.getWidth() / 2) * 2,
+                    (bitmap.getHeight() / 2) * 2);
+        }
+        Bitmap yuvImage = ColorMatrix.applyMatrix(rs, croppedBitmap,
                 ColorMatrixParams.rgbToNv21Matrix(), new Float4(0.0f, 0.5f, 0.5f, 0.0f));
 
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, yuvImage);
@@ -57,7 +68,7 @@ public class Nv21Image {
                 yuvImage.getWidth(), yuvImage.getHeight());
         Allocation aout = Allocation.createTyped(bitmapRSContext.rs, outType);
         channelScript.forEach_channelR(bitmapRSContext.ain, aout);
-        int size = sampleBitmap.getWidth() * sampleBitmap.getHeight();
+        int size = croppedBitmap.getWidth() * croppedBitmap.getHeight();
 
         byte[] yByteArray;
         if (dstArray == null)
@@ -90,7 +101,6 @@ public class Nv21Image {
 
         uvAllocation.copyTo(uvByteArray);
         System.arraycopy(uvByteArray, 0, yByteArray, size, uvByteArray.length);
-//        Arrays.fill(yByteArray, size, yByteArray.length, (byte) 127);
 
         Log.d("NV21", "Conversion to NV21: " + (System.currentTimeMillis() - startTime) + "ms");
         return new Nv21Image(yByteArray, yuvImage.getWidth(), yuvImage.getHeight());
@@ -104,6 +114,9 @@ public class Nv21Image {
         return YuvToRgb.yuvToRgb(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
     }
 
+    /**
+     * See {@link Nv21Image#bitmapToNV21(RenderScript, Bitmap, byte[])}.
+     */
     public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap bitmap) {
         return bitmapToNV21(rs, bitmap, null);
     }
