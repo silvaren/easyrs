@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+def version = '0.5.3'
+
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'easyRS'
@@ -13,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/silvaren/easyrs'
     gitUrl = 'https://github.com/silvaren/easyrs.git'
 
-    libraryVersion = '0.5.2'
+    libraryVersion = version
 
     developerId = 'silvaren'
     developerName = 'Renato Silva'
@@ -33,7 +35,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
-        versionName "0.5.2"
+        versionName version
         renderscriptTargetApi 16
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
