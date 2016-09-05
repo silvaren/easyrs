@@ -14,6 +14,7 @@ Bitmap outputBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height); 
                                                                                 // the NV21 image data
 ```
 #### Bitmap to NV21  
+Converts an Android Bitmap image to a NV21 image. Please notice that because of the NV21 format the resulting image will be resized to the nearest even sized dimensions (eg. 501x499 -> 500x498).
 ```Java
 Nv21Image nv21Image = Nv21Image.bitmapToNV21(rs, inputBitmap);
 ```
@@ -55,7 +56,7 @@ Bitmap outputBitmap = Lut3D.apply3dLut(rs, inputBitmap, cube); // where cube is 
 Bitmap outputBitmap = Resize.resize(rs, inputBitmap, targetWidth, targetHeight);
 ```
 
-When applying operations to NV21 images, beware that conversions to/from Bitmap format are part of the processing pipeline so they have an overhead to consider.
+When applying operations to NV21 images, beware that conversions to/from Bitmap format are part of the processing pipeline so they have an overhead to consider and that the image will be rounded down to the nearest even integer in each dimension.
 
 ### Download ###
 
