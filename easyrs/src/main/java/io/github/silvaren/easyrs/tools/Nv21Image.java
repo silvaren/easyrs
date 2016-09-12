@@ -11,7 +11,6 @@ import android.util.Log;
 
 import java.util.Arrays;
 
-import io.github.silvaren.easyrs.tools.ColorMatrix;
 import io.github.silvaren.easyrs.scripts.ScriptC_channel;
 import io.github.silvaren.easyrs.scripts.ScriptC_uvencode;
 import io.github.silvaren.easyrs.tools.base.RSToolboxContext;
@@ -49,6 +48,9 @@ public class Nv21Image {
     /**
      * Converts an android Bitmap image to NV21 format. If the image has odd dimensions the
      * conversion process will round down each dimension to its closest even integer.
+     * @param dstArray is an optional byte array to receive the converted NV21 data. It
+     *                 must be (1.5 * number_of_pixels) bytes long. If null is passed,
+     *                 a new byte array will be created and returned.
      */
     public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap bitmap, byte[] dstArray) {
         long startTime = System.currentTimeMillis();
@@ -115,7 +117,8 @@ public class Nv21Image {
     }
 
     /**
-     * See {@link Nv21Image#bitmapToNV21(RenderScript, Bitmap, byte[])}.
+     * Converts an android Bitmap image to NV21 format. If the image has odd dimensions the
+     * conversion process will round down each dimension to its closest even integer.
      */
     public static Nv21Image bitmapToNV21(RenderScript rs, Bitmap bitmap) {
         return bitmapToNV21(rs, bitmap, null);
