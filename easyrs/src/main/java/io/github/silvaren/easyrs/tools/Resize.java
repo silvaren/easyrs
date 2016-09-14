@@ -10,6 +10,9 @@ import io.github.silvaren.easyrs.tools.base.RSToolboxContext;
 
 public class Resize {
 
+    /**
+     * Resizes a Bitmap image to a target width and height.
+     */
     public static Bitmap resize(RenderScript rs, Bitmap inputBitmap, int targetWidth,
                                 int targetHeight) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
@@ -27,6 +30,12 @@ public class Resize {
         return outputBitmap;
     }
 
+    /**
+     * Resizes a NV21 image to a target width and height.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     */
     public static byte[] resize(RenderScript rs, byte[] nv21ByteArray, int width, int height,
                                 int targetWidth, int targetHeight) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height);
