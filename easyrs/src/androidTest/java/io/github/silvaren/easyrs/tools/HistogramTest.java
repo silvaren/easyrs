@@ -20,8 +20,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import io.github.silvaren.easyrs.tools.Histogram;
-import io.github.silvaren.easyrs.tools.Nv21Image;
+import io.github.silvaren.easyrs.tools.base.Utils;
 
 @RunWith(AndroidJUnit4.class)
 public class HistogramTest extends ApplicationTestCase<Application> {
@@ -44,7 +43,7 @@ public class HistogramTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldComputeLuminanceHistogramOfBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         int[] expectedHistogram = getExpectedHistogram(rs, bmpFromNv21, Op.LUMINANCE);
 
@@ -58,7 +57,7 @@ public class HistogramTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldComputeLuminanceHistogramOfNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         int[] expectedHistogram = getExpectedHistogram(rs, bmpFromNv21, Op.LUMINANCE);
 
@@ -72,7 +71,7 @@ public class HistogramTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldComputeRgbaHistogramOfBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         int[] expectedHistogram = getExpectedHistogram(rs, bmpFromNv21, Op.RGBA);
 
@@ -86,7 +85,7 @@ public class HistogramTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldComputeRgbaHistogramOfNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         int[] expectedHistogram = getExpectedHistogram(rs, bmpFromNv21, Op.RGBA);
 

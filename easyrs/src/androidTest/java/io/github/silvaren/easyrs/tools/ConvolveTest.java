@@ -20,8 +20,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import io.github.silvaren.easyrs.tools.Convolve;
-import io.github.silvaren.easyrs.tools.Nv21Image;
+import io.github.silvaren.easyrs.tools.base.Utils;
 import io.github.silvaren.easyrs.tools.params.SampleParams;
 
 @RunWith(AndroidJUnit4.class)
@@ -45,7 +44,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyConvolve3x3ToBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap3x3(rs, bmpFromNv21);
 
@@ -59,7 +58,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyConvolve3x3ToNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap3x3(rs, bmpFromNv21);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
@@ -75,7 +74,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyConvolve5x5ToBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap5x5(rs, bmpFromNv21);
 
@@ -89,7 +88,7 @@ public class ConvolveTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyConvolve5x5ToNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap5x5(rs, bmpFromNv21);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);

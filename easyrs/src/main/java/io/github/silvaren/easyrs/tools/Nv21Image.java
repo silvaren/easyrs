@@ -9,8 +9,6 @@ import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.util.Log;
 
-import java.util.Arrays;
-
 import io.github.silvaren.easyrs.scripts.ScriptC_channel;
 import io.github.silvaren.easyrs.scripts.ScriptC_uvencode;
 import io.github.silvaren.easyrs.tools.base.RSToolboxContext;
@@ -26,23 +24,6 @@ public class Nv21Image {
         this.nv21ByteArray = nv21ByteArray;
         this.width = width;
         this.height = height;
-    }
-
-    public static Nv21Image generateSample() {
-        int width = 256 * 2;
-        int height = 256 * 2;
-        int size = width * height;
-        byte[] nv21ByteArray = new byte[size + size / 2];
-        Arrays.fill(nv21ByteArray, (byte) 127);
-
-        for (int x = 0; x < 256; x++) {
-            for (int y = 0; y < 256; y++) {
-                nv21ByteArray[size + y * 256 * 2 + x * 2] = (byte) x;
-                nv21ByteArray[size + y * 256 * 2 + x * 2 + 1] = (byte) y;
-            }
-        }
-
-        return new Nv21Image(nv21ByteArray, width, height);
     }
 
     /**
@@ -108,10 +89,20 @@ public class Nv21Image {
         return new Nv21Image(yByteArray, yuvImage.getWidth(), yuvImage.getHeight());
     }
 
-    public static Bitmap nv21ToBitmap(RenderScript rs, byte[] yByteArray, int width, int height) {
-        return YuvToRgb.yuvToRgb(rs, yByteArray, width, height);
+    /**
+     * Converts a NV21 image to a Bitmap, by using {@link YuvToRgb}.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     */
+    public static Bitmap nv21ToBitmap(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
+        return YuvToRgb.yuvToRgb(rs, nv21ByteArray, width, height);
     }
 
+    /**
+     * Converts a NV21 image to a Bitmap, by using {@link YuvToRgb}.
+     * @param nv21Image the NV21 image to convert.
+     */
     public static Bitmap nv21ToBitmap(RenderScript rs, Nv21Image nv21Image) {
         return YuvToRgb.yuvToRgb(rs, nv21Image.nv21ByteArray, nv21Image.width, nv21Image.height);
     }

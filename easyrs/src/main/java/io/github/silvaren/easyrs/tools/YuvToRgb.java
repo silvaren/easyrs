@@ -9,10 +9,21 @@ import android.support.v8.renderscript.Type;
 import android.util.Log;
 
 public class YuvToRgb {
+
+    /**
+     * Converts a NV21 image to a Bitmap.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     */
     public static Bitmap yuvToRgb(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
         return yuvToRgb(rs, new Nv21Image(nv21ByteArray, width, height));
     }
 
+    /**
+     * Converts a NV21 image to a Bitmap.
+     * @param nv21Image the NV21 image to convert.
+     */
     public static Bitmap yuvToRgb(RenderScript rs, Nv21Image nv21Image) {
         long startTime = System.currentTimeMillis();
 

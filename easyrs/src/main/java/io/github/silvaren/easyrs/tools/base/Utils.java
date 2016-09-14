@@ -4,25 +4,28 @@ import android.graphics.Bitmap;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
 import io.github.silvaren.easyrs.tools.Histogram;
+import io.github.silvaren.easyrs.tools.Nv21Image;
 
 public class Utils {
 
-    public static Bitmap drawColorBitmap(Bitmap sampleBitmap, int color) {
-        Bitmap outputBitmap = Bitmap.createBitmap(Histogram.COLOR_DEPTH, Histogram.COLOR_DEPTH,
-                Bitmap.Config.ARGB_8888);
-        for (int x = 0; x < Histogram.COLOR_DEPTH; x++) {
-            for (int y = 0; y < Histogram.COLOR_DEPTH; y++) {
-                int c = 0xFF000000;
-                c |= x << 0;
-                c |= x << 8;
-                c |= x << 16;
-                outputBitmap.setPixel(x, y, c);
+    public static Nv21Image generateSample() {
+        int width = 256 * 2;
+        int height = 256 * 2;
+        int size = width * height;
+        byte[] nv21ByteArray = new byte[size + size / 2];
+        Arrays.fill(nv21ByteArray, (byte) 127);
+
+        for (int x = 0; x < 256; x++) {
+            for (int y = 0; y < 256; y++) {
+                nv21ByteArray[size + y * 256 * 2 + x * 2] = (byte) x;
+                nv21ByteArray[size + y * 256 * 2 + x * 2 + 1] = (byte) y;
             }
         }
 
-        return outputBitmap;
+        return new Nv21Image(nv21ByteArray, width, height);
     }
 
     public static Bitmap drawHistograms(int[] histograms, int channels) {

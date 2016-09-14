@@ -8,7 +8,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicLUT;
 import android.support.v8.renderscript.ScriptIntrinsicResize;
 import android.support.v8.renderscript.Type;
 import android.test.ApplicationTestCase;
@@ -21,10 +20,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import io.github.silvaren.easyrs.tools.Lut;
-import io.github.silvaren.easyrs.tools.Nv21Image;
-import io.github.silvaren.easyrs.tools.Resize;
-import io.github.silvaren.easyrs.tools.params.LutParams;
+import io.github.silvaren.easyrs.tools.base.Utils;
 
 @RunWith(AndroidJUnit4.class)
 public class ResizeTest extends ApplicationTestCase<Application> {
@@ -49,7 +45,7 @@ public class ResizeTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldResizeBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
 
@@ -63,7 +59,7 @@ public class ResizeTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldResizeNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);

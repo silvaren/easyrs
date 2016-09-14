@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 
 import java.io.ByteArrayOutputStream;
 
-import io.github.silvaren.easyrs.tools.Nv21Image;
 import io.github.silvaren.easyrs.tools.base.Utils;
 
 @RunWith(AndroidJUnit4.class)
@@ -45,7 +44,7 @@ public class Nv21ImageTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldConvertNv21InputToBitmap() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap expectedBitmap = getConvertedBitmap(nv21Image);
 
         // when

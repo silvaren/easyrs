@@ -21,8 +21,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import io.github.silvaren.easyrs.tools.ColorMatrix;
-import io.github.silvaren.easyrs.tools.Nv21Image;
+import io.github.silvaren.easyrs.tools.base.Utils;
 
 @RunWith(AndroidJUnit4.class)
 public class ColorMatrixTest extends ApplicationTestCase<Application> {
@@ -50,7 +49,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldConvertBitmapInputToGrayscale() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.GRAYSCALE);
 
@@ -64,7 +63,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldConvertNv21InputToGrayscale() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.GRAYSCALE);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
@@ -79,7 +78,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldConvertBitmapInputToYuv() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.RGB_TO_YUV);
 
@@ -93,7 +92,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyColorMatrix3fToBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.MATRIX3F);
 
@@ -107,7 +106,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyColorMatrix4fToBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.MATRIX4F);
 
@@ -121,7 +120,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyColorMatrix3fToNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.MATRIX3F);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
@@ -137,7 +136,7 @@ public class ColorMatrixTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyColorMatrix4fToNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21, Op.MATRIX4F);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);

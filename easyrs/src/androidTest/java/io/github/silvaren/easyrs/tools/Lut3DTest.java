@@ -19,9 +19,8 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
-import io.github.silvaren.easyrs.tools.Lut3D;
+import io.github.silvaren.easyrs.tools.base.Utils;
 import io.github.silvaren.easyrs.tools.params.SampleParams;
-import io.github.silvaren.easyrs.tools.Nv21Image;
 
 @RunWith(AndroidJUnit4.class)
 public class Lut3DTest extends ApplicationTestCase<Application> {
@@ -44,7 +43,7 @@ public class Lut3DTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyLut3DToBitmapInput() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
 
@@ -58,7 +57,7 @@ public class Lut3DTest extends ApplicationTestCase<Application> {
     @Test
     public void shouldApplyLut3DToNv21Input() {
         // given
-        Nv21Image nv21Image = Nv21Image.generateSample();
+        Nv21Image nv21Image = Utils.generateSample();
         Bitmap bmpFromNv21 = Nv21Image.nv21ToBitmap(rs, nv21Image);
         Bitmap expectedBitmap = getExpectedBitmap(rs, bmpFromNv21);
         Nv21Image expectedNv21Image = Nv21Image.bitmapToNV21(rs, expectedBitmap);
