@@ -48,12 +48,23 @@ public class Convolve {
         }
     };
 
+    /**
+     * Applies a 3x3 convolution to a Bitmap image.
+     * @param coefficients the 3x3 convolution coefficients.
+     */
     public static Bitmap convolve3x3(RenderScript rs, Bitmap bitmap, float[] coefficients) {
         ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
                 convolveToolScript(convolve3x3Script));
         return convolveTool.doComputation(rs, bitmap, new ConvolveParams(coefficients));
     }
 
+    /**
+     * Applies a 3x3 convolution to a NV21 image.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     * @param coefficients the 3x3 convolution coefficients.
+     */
     public static byte[] convolve3x3(RenderScript rs, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
         ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
@@ -62,12 +73,23 @@ public class Convolve {
                 new ConvolveParams(coefficients));
     }
 
+    /**
+     * Applies a 5x5 convolution to a Bitmap image.
+     * @param coefficients the 5x5 convolution coefficients.
+     */
     public static Bitmap convolve5x5(RenderScript rs, Bitmap bitmap, float[] coefficients) {
         ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
                 convolveToolScript(convolve5x5Script));
         return convolveTool.doComputation(rs, bitmap, new ConvolveParams(coefficients));
     }
 
+    /**
+     * Applies a 5x5 convolution to a NV21 image.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     * @param coefficients the 5x5 convolution coefficients.
+     */
     public static byte[] convolve5x5(RenderScript rs, byte[] nv21ByteArray, int width, int height,
                                             float[] coefficients) {
         ConvertingTool<ConvolveParams> convolveTool = new ConvertingTool<>(
