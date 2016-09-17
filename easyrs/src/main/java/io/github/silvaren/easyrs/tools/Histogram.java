@@ -14,6 +14,10 @@ public class Histogram {
     public static final int COLOR_DEPTH = 256;
     public static final int CHANNELS = 4;
 
+    /**
+     * Computes a luminance histogram of a Bitmap.
+     * @return a 256-length int array of integer frequencies at luminance level.
+     */
     public static int[] luminanceHistogram(RenderScript rs, Bitmap inputBitmap) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32(bitmapRSContext.rs),
@@ -30,6 +34,11 @@ public class Histogram {
         return histogram;
     }
 
+    /**
+     * Computes a RGBA histogram of a Bitmap.
+     * @return a 1024-length int array of integer frequencies at each channel intensity in the
+     * following interleaved format [R0,G0,B0,A0,R1,G1,B1,A1...]
+     */
     public static int[] rgbaHistograms(RenderScript rs, Bitmap inputBitmap) {
         RSToolboxContext bitmapRSContext = RSToolboxContext.createFromBitmap(rs, inputBitmap);
         Allocation aout = Allocation.createSized(bitmapRSContext.rs, Element.I32_4(bitmapRSContext.rs),
@@ -47,13 +56,28 @@ public class Histogram {
         return histograms;
     }
 
-    public static int[] rgbaHistograms(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
-        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height);
-        return rgbaHistograms(rs, srcBitmap);
-    }
-
+    /**
+     * Applies a blur effect to a NV21 image.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     * @return a 256-length int array of integer frequencies at luminance level.
+     */
     public static int[] luminanceHistogram(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
         Bitmap srcBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height);
         return luminanceHistogram(rs, srcBitmap);
+    }
+
+    /**
+     * Applies a blur effect to a NV21 image.
+     * @param nv21ByteArray the original NV21 byte array.
+     * @param width the original NV21 image width.
+     * @param height the original NV21 image height.
+     * @return a 1024-length int array of integer frequencies at each channel intensity in the
+     * following interleaved format [R0,G0,B0,A0,R1,G1,B1,A1...]
+     */
+    public static int[] rgbaHistograms(RenderScript rs, byte[] nv21ByteArray, int width, int height) {
+        Bitmap srcBitmap = Nv21Image.nv21ToBitmap(rs, nv21ByteArray, width, height);
+        return rgbaHistograms(rs, srcBitmap);
     }
 }
