@@ -20,14 +20,14 @@ public class Lut3DParams {
         private final int ySize;
         private final int zSize;
 
-        Cube(int xSize, int ySize, int zSize) {
+        public Cube(int xSize, int ySize, int zSize) {
             this.cube = new int[xSize * ySize * zSize];
             this.xSize = xSize;
             this.ySize = ySize;
             this.zSize = zSize;
         }
 
-        Cube(int xSize, int ySize, int zSize, int[] cube) {
+        public Cube(int xSize, int ySize, int zSize, int[] cube) {
             this.cube = cube;
             this.xSize = xSize;
             this.ySize = ySize;

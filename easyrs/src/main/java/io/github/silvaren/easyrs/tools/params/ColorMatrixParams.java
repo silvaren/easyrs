@@ -67,7 +67,7 @@ public class ColorMatrixParams {
 
     private final MatrixSetter matrixSetter;
 
-    ColorMatrixParams(MatrixSetter matrixSetter) {
+    public ColorMatrixParams(MatrixSetter matrixSetter) {
         this.matrixSetter = matrixSetter;
     }
 
